@@ -22,15 +22,17 @@ import com.appsv.missionexpensemanager.expense.presentation.transaction_creation
 @Composable
 fun AmountTextField(
     modifier: Modifier = Modifier,
+    amount : String,
     isEnteringAmount: Boolean = false,
     onDone: (String) -> Unit = {},
-    onAmountClick: () -> Unit = {}
+    onAmountClick: () -> Unit = {},
 ) {
     var totalAmount by remember { mutableStateOf(TextFieldValue("")) }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
     var enteredTotalAmount by remember { mutableStateOf("0.00") }
+
     if (isEnteringAmount) {
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -68,7 +70,7 @@ fun AmountTextField(
         )
     } else {
         UnderlinedText(
-            text = if (enteredTotalAmount.isNotEmpty()) enteredTotalAmount else "0.00",
+            text = if (amount.isNotEmpty()) amount else "0.00",
             color = Color.Black,
             backgroundColor = Color.Transparent,
             onAmountClick = onAmountClick

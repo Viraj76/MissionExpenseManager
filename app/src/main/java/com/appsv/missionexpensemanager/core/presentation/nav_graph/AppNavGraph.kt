@@ -37,8 +37,8 @@ fun AppNavGraph(
             TransactionDashboardScreen(
                 transactionState = transactionState,
                 onTransactionCardClick = {
-
                     navController.navigate(EditTransactionScreen(
+                        id = it.id,
                         transactionType = it.transactionType,
                         transactionNumber = it.transactionNumber,
                         description = it.description,
@@ -47,14 +47,29 @@ fun AppNavGraph(
                     ))
                 }
             ){
-                navController.navigate(TransactionCreationScreen)
+                navController.navigate(TransactionCreationScreen())
             }
         }
 
         composable<TransactionCreationScreen>{
             val transactionViewModel  = hiltViewModel<TransactionViewModel>()
+            val args = it.toRoute<TransactionCreationScreen>()
+
+            val transaction = Transaction(
+                id = args.id,
+                transactionType = args.transactionType,
+                transactionNumber = args.transactionNumber,
+                description = args.description,
+                date = args.date,
+                amount = args.amount
+            )
+
+            LaunchedEffect(Unit) {
+                Log.d("Details", transaction.toString())
+            }
 
             TransactionCreationScreen(
+                selectedTransaction = transaction,
                 events = transactionViewModel::onEvent
             )
         }
@@ -62,6 +77,9 @@ fun AppNavGraph(
         composable<EditTransactionScreen>{
 
             val args = it.toRoute<EditTransactionScreen>()
+
+
+
             TransactionDetailsScreen(
                 selectedTransaction = Transaction(
                     id = args.id,
@@ -70,7 +88,17 @@ fun AppNavGraph(
                     description = args.description,
                     date = args.date,
                     amount = args.amount
-                )
+                ),
+                onEditIconClicked = {
+                    navController.navigate(TransactionCreationScreen(
+                        id = it.id,
+                        transactionType = it.transactionType,
+                        transactionNumber = it.transactionNumber,
+                        description = it.description,
+                        date = it.date,
+                        amount = it.amount
+                    ))
+                }
             )
         }
     }

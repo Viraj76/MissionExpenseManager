@@ -26,7 +26,8 @@ import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionDetailsScreen(
-    selectedTransaction : Transaction = Transaction()
+    selectedTransaction : Transaction = Transaction(),
+    onEditIconClicked : (Transaction) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -42,7 +43,9 @@ fun TransactionDetailsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Handle edit action */ }) {
+                    IconButton(onClick = {
+                        onEditIconClicked(selectedTransaction)
+                    }) {
                         Icon(
                             painter = painterResource(R.drawable.edit),
                             contentDescription = "Edit",

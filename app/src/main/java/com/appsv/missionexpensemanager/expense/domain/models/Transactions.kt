@@ -1,9 +1,7 @@
 package com.appsv.missionexpensemanager.expense.domain.models
 
-import java.util.UUID
-
 data class Transaction(
-    val id : String  = UUID.randomUUID().toString(),
+    val id : String  = "",
     val transactionType: String = "Expense",
     val transactionNumber: Int = 0,
     val description : String = "",

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,24 +40,30 @@ import com.appsv.missionexpensemanager.expense.utils.formatDate
 import com.appsv.missionexpensemanager.expense.utils.isNumberOrDouble
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionCreationScreen(
+    selectedTransaction : Transaction = Transaction(),
     events: (TransactionCreationEvents) -> Unit
 ) {
 
+    val isEditMode by remember { mutableStateOf(selectedTransaction != Transaction()) }
+
     val scope = rememberCoroutineScope()
 
-
+    LaunchedEffect(Unit) {
+        Log.d("Amount", selectedTransaction.amount)
+    }
     var showCalendarDialog by remember { mutableStateOf(false) }
     var isEnteringAmount by remember { mutableStateOf(false) }
 
-    val initialDate = formatDate(System.currentTimeMillis())
-    val initialDescription = ""
-    val initialEnteredTotalAmount = "0.00"
-    val initialSelectedOption = "Expense"
+    val initialDate = if(isEditMode) selectedTransaction.date else formatDate(System.currentTimeMillis())
+    val initialDescription = if(isEditMode) selectedTransaction.description else ""
+    val initialEnteredTotalAmount = if (isEditMode) selectedTransaction.amount else "0.00"
+    val initialSelectedOption = if(isEditMode) selectedTransaction.transactionType else "Expense"
 
     var date by remember { mutableStateOf(initialDate) }
     var description by remember { mutableStateOf(initialDescription) }
@@ -204,11 +211,11 @@ fun TransactionCreationScreen(
                             color = Color.Black
                         )
                         AmountTextField(
+                            amount =  enteredTotalAmount,
                             isEnteringAmount = isEnteringAmount,
                             onDone = { totalAmount ->
                                 isEnteringAmount = false
-                                enteredTotalAmount =
-                                    if (totalAmount.isNotEmpty()) totalAmount else initialEnteredTotalAmount
+                                enteredTotalAmount = if (totalAmount.isNotEmpty()) totalAmount else initialEnteredTotalAmount
                             },
                             onAmountClick = {
                                 isEnteringAmount = true
@@ -231,6 +238,7 @@ fun TransactionCreationScreen(
                         onClick = {
 
                             val transaction = Transaction(
+                                id = UUID.randomUUID().toString(),
                                 transactionType = selectedOption,
                                 description = description,
                                 date = date,
