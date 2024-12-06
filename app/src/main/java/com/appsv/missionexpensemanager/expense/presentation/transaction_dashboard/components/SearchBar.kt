@@ -24,7 +24,7 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.LightGrayishBl
 fun SearchBar() {
 
     Box(
-        modifier = Modifier.fillMaxWidth().wrapContentHeight().background(Color.White),
+        modifier = Modifier.fillMaxWidth().background(Color.White),
 
         ){
         TextField(

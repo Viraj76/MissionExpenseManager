@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
@@ -26,10 +27,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +51,9 @@ import com.appsv.missionexpensemanager.expense.utils.transactionsDummyList
 
 @Preview
 @Composable
-fun TransactionDashboardScreen(modifier: Modifier = Modifier) {
+fun TransactionDashboardScreen(
+    transactionState : TransactionState = TransactionState()
+) {
 
     val navItemList = listOf(
         NavItem("Dashboard", icon = NavIcon.Vector(Icons.Default.Home)),
@@ -136,33 +141,66 @@ fun TransactionDashboardScreen(modifier: Modifier = Modifier) {
                 )
             }
         },
-        floatingActionButtonPosition = FabPosition.Center
+        floatingActionButtonPosition = FabPosition.Center,
     )
     { innerPadding ->
-        TransactionDashboardContent(modifier = Modifier.padding(innerPadding))
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            SearchBar()
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                modifier = Modifier.padding(horizontal = 12.dp),
+                text = "Recent Transactions",
+                color = GrayishPurple,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                if(transactionState.isLoading){
+                    CircularProgressIndicator()
+                }
+                else if(transactionState.transactionList.isNotEmpty()){
+                    TransactionDashboardContent(modifier = Modifier.padding(innerPadding))
+                }
+                else if(transactionState.error.isNotEmpty()){
+                    Text(
+                        text = transactionState.error,
+                        fontSize = 16.sp,
+                        color = ColorPrimary,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                else{
+                    Text(
+                        text = "No transaction! \n Click on Add New button to add transactions",
+                        fontSize = 16.sp,
+                        color = ColorPrimary,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+        }
+
+
+
     }
 
 }
 
 @Composable
 fun TransactionDashboardContent(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-    ) {
-        SearchBar()
 
-        Spacer(modifier = Modifier.height(20.dp))
+    RecentTransactionsLazyList()
 
-        Text(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            text = "Recent Transactions",
-            color = GrayishPurple,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        RecentTransactionsLazyList()
-    }
 
 }
 

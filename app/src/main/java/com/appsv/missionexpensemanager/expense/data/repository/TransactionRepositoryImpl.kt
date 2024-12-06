@@ -16,7 +16,7 @@ class TransactionRepositoryImpl @Inject constructor(private val firebaseDatabase
 
     private val transactionRef = firebaseDatabase.getReference(TRANSACTION)
 
-    override suspend fun getTransactions() : Flow<List<Transaction>> = callbackFlow {
+    override suspend fun getTransactions() : Flow<List<Transaction>?> = callbackFlow {
 
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

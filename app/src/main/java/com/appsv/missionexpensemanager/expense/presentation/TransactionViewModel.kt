@@ -28,10 +28,21 @@ class TransactionViewModel
     private fun getTransactions() {
         viewModelScope.launch {
             transactionRepository.getTransactions().collect { transactionList ->
-                _transactionsState.value = transactionState.value.copy(
-                    isLoading = false,
-                    transactionList = transactionList
-                )
+                if(transactionList != null){
+                    _transactionsState.value = transactionState.value.copy(
+                        isLoading = false,
+                        transactionList = transactionList,
+                        error = ""
+                    )
+                }
+                else{
+                    _transactionsState.value = transactionState.value.copy(
+                        isLoading = false,
+                        transactionList = emptyList(),
+                        error = "Error! Try Again Later."
+                    )
+                }
+
             }
         }
     }
