@@ -1,5 +1,6 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -14,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,7 +27,7 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPur
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 
-@Preview
+//@Preview
 @Composable
 fun TransactionCard(
     transaction: Transaction =
@@ -34,11 +37,16 @@ fun TransactionCard(
             description = "",
             date = "2024-12-06",
             amount = "45.50"
-        )
+        ),
+    onTransactionCardClick : () -> Unit
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(4.dp))
+            .clickable{
+                onTransactionCardClick()
+            },
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(4.dp),
         colors = CardDefaults.cardColors().copy(

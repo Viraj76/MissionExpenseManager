@@ -1,5 +1,7 @@
 package com.appsv.missionexpensemanager.core.presentation.nav_graph
 
+import android.util.Log
+import android.view.SurfaceControl
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -11,8 +13,10 @@ import androidx.navigation.compose.rememberNavController
 import com.appsv.missionexpensemanager.expense.presentation.TransactionViewModel
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.TransactionDashboardScreen
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.navigation.toRoute
+import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationScreen
+import com.appsv.missionexpensemanager.expense.presentation.transaction_details.TransactionDetailsScreen
 
 @Composable
 fun AppNavGraph(
@@ -31,7 +35,17 @@ fun AppNavGraph(
 
             val transactionState by transactionViewModel.transactionState.collectAsStateWithLifecycle()
             TransactionDashboardScreen(
-                transactionState = transactionState
+                transactionState = transactionState,
+                onTransactionCardClick = {
+
+                    navController.navigate(EditTransactionScreen(
+                        transactionType = it.transactionType,
+                        transactionNumber = it.transactionNumber,
+                        description = it.description,
+                        date = it.date,
+                        amount = it.amount
+                    ))
+                }
             ){
                 navController.navigate(TransactionCreationScreen)
             }
@@ -42,6 +56,21 @@ fun AppNavGraph(
 
             TransactionCreationScreen(
                 events = transactionViewModel::onEvent
+            )
+        }
+
+        composable<EditTransactionScreen>{
+
+            val args = it.toRoute<EditTransactionScreen>()
+            TransactionDetailsScreen(
+                selectedTransaction = Transaction(
+                    id = args.id,
+                    transactionType = args.transactionType,
+                    transactionNumber = args.transactionNumber,
+                    description = args.description,
+                    date = args.date,
+                    amount = args.amount
+                )
             )
         }
     }

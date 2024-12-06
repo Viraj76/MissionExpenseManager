@@ -42,6 +42,7 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondary
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondaryVariant
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishBlue
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
+import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavIcon
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavItem
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.SearchBar
@@ -53,6 +54,7 @@ import com.appsv.missionexpensemanager.expense.utils.transactionsDummyList
 @Composable
 fun TransactionDashboardScreen(
     transactionState : TransactionState = TransactionState(),
+    onTransactionCardClick : (Transaction) -> Unit = {},
     onFabClick : () -> Unit = {}
 ) {
 
@@ -176,7 +178,9 @@ fun TransactionDashboardScreen(
                     ) {
 
                         items(transactionState.transactionList){
-                            TransactionCard(it)
+                            TransactionCard(it){
+                                onTransactionCardClick(it)
+                            }
                         }
                     }
                 }

@@ -1,6 +1,5 @@
 package com.appsv.missionexpensemanager.expense.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
@@ -25,14 +24,15 @@ class TransactionViewModel
         getTransactions()
     }
 
-    fun onEvent(event : TransactionCreationEvents){
-        when(event){
+    fun onEvent(
+        events : TransactionCreationEvents,
+    ){
+        when(events){
             is TransactionCreationEvents.SaveTransaction -> {
-                saveTransaction(event.transaction)
+                saveTransaction(events.transaction)
             }
         }
     }
-
     private fun saveTransaction(transaction: Transaction) {
         viewModelScope.launch{
             transactionRepository.saveTransaction(transaction)
