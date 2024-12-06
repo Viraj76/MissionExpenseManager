@@ -1,4 +1,4 @@
-package com.appsv.missionexpensemanager.ui.theme
+package com.appsv.missionexpensemanager.core.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

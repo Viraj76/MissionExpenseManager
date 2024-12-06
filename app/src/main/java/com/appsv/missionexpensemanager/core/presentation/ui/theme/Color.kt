@@ -1,4 +1,4 @@
-package com.appsv.missionexpensemanager.ui.theme
+package com.appsv.missionexpensemanager.core.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

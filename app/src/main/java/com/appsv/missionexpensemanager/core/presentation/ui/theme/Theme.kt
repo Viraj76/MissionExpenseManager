@@ -1,6 +1,5 @@
-package com.appsv.missionexpensemanager.ui.theme
+package com.appsv.missionexpensemanager.core.presentation.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
