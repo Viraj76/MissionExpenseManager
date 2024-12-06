@@ -1,6 +1,7 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_details
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,16 +39,22 @@ import kotlinx.coroutines.launch
 fun TransactionDetailsScreen(
     selectedTransaction : Transaction = Transaction(),
     onEditIconClicked : (Transaction) -> Unit = {},
-    events: (TransactionCreationEvents) -> Unit
+    events: (TransactionCreationEvents) -> Unit,
+    goToTransactionDashBoard : () -> Unit = {}
 ) {
     var isYesNoDialogOpen by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    BackHandler {
+        goToTransactionDashBoard()
+    }
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Expense", color = Color.Black, fontWeight = FontWeight.Medium) },
                 navigationIcon = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        goToTransactionDashBoard()
+                    }) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_left),
                             contentDescription = "Back",
@@ -154,11 +161,11 @@ fun TransactionDetailsScreen(
         YesNoAlertDialog(
             message = "Are you sure you want to delete this transaction?",
             onYes = {
-                Log.d("IDDDD",selectedTransaction.id)
+                isYesNoDialogOpen = false
+                goToTransactionDashBoard()
                 scope.launch{
                     events(TransactionCreationEvents.DeleteTransaction(selectedTransaction.id))
                 }
-                isYesNoDialogOpen = false
             },
             onNo = {
                 isYesNoDialogOpen = false

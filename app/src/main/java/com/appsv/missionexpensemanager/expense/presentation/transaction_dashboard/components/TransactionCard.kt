@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -27,7 +28,7 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPur
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 
-//@Preview
+@Preview
 @Composable
 fun TransactionCard(
     transaction: Transaction =
@@ -38,7 +39,7 @@ fun TransactionCard(
             date = "2024-12-06",
             amount = "45.50"
         ),
-    onTransactionCardClick : () -> Unit
+    onTransactionCardClick : () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -59,11 +60,11 @@ fun TransactionCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
-
+                modifier = Modifier.weight(0.8f)
             ) {
                 if(transaction.description.isNotEmpty()){
                     Text(
-                        transaction.description,
+                        text = transaction.description,
                         style = MaterialTheme.typography.bodyMedium,
                         color = DarkGrayishPurple,
                         fontSize = 20.sp,
@@ -90,11 +91,10 @@ fun TransactionCard(
 
 
             }
-
-
-
+            Spacer(modifier = Modifier.width(20.dp))
             Text(
-                "₹ ${transaction.amount}",
+                modifier = Modifier.weight(0.2f),
+                text ="₹ ${transaction.amount}",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = DarkGrayishPurple,

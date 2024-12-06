@@ -70,7 +70,14 @@ fun AppNavGraph(
 
             TransactionCreationScreen(
                 selectedTransaction = transaction,
-                events = transactionViewModel::onEvent
+                events = transactionViewModel::onEvent,
+                goToTransactionDashBoard = {
+                    navController.navigate(TransactionDashboardScreen){
+                        popUpTo<TransactionDashboardScreen>{
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
 
@@ -98,6 +105,13 @@ fun AppNavGraph(
                         date = it.date,
                         amount = it.amount
                     ))
+                },
+                goToTransactionDashBoard = {
+                    navController.navigate(TransactionDashboardScreen){
+                        popUpTo<TransactionDashboardScreen>{
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

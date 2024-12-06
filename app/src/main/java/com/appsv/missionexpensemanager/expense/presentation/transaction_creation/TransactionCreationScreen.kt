@@ -3,6 +3,7 @@ package com.appsv.missionexpensemanager.expense.presentation.transaction_creatio
 
 import AmountTextField
 import android.util.Log
+import androidx.activity.compose.BackHandler
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -45,9 +46,13 @@ import java.util.UUID
 @Composable
 fun TransactionCreationScreen(
     selectedTransaction : Transaction = Transaction(),
-    events: (TransactionCreationEvents) -> Unit
+    events: (TransactionCreationEvents) -> Unit,
+    goToTransactionDashBoard : () -> Unit
 ) {
 
+    BackHandler {
+        goToTransactionDashBoard()
+    }
     val isEditMode by remember { mutableStateOf(selectedTransaction != Transaction()) }
 
     val scope = rememberCoroutineScope()
@@ -91,7 +96,7 @@ fun TransactionCreationScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-
+                            goToTransactionDashBoard()
                         }
                     ) {
                         Icon(
@@ -235,20 +240,19 @@ fun TransactionCreationScreen(
                 ) {
                     Button(
                         onClick = {
-
-                            saveOrUpdateTransaction(
-                                isEditMode = isEditMode,
-                                selectedTransaction = selectedTransaction,
-                                selectedOption = selectedOption,
-                                description = description,
-                                date = date,
-                                enteredTotalAmount = enteredTotalAmount,
-                                scope = scope,
-                                events = events
-                            )
-
-
-
+                            goToTransactionDashBoard()
+                            scope.launch{
+                                saveOrUpdateTransaction(
+                                    isEditMode = isEditMode,
+                                    selectedTransaction = selectedTransaction,
+                                    selectedOption = selectedOption,
+                                    description = description,
+                                    date = date,
+                                    enteredTotalAmount = enteredTotalAmount,
+                                    scope = scope,
+                                    events = events
+                                )
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
