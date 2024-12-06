@@ -52,7 +52,8 @@ import com.appsv.missionexpensemanager.expense.utils.transactionsDummyList
 @Preview
 @Composable
 fun TransactionDashboardScreen(
-    transactionState : TransactionState = TransactionState()
+    transactionState : TransactionState = TransactionState(),
+    onFabClick : () -> Unit = {}
 ) {
 
     val navItemList = listOf(
@@ -122,7 +123,9 @@ fun TransactionDashboardScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
 
-                onClick = { /* Handle click */ },
+                onClick = {
+                    onFabClick()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 10.dp, top = 0.dp, start = 100.dp, end = 100.dp),

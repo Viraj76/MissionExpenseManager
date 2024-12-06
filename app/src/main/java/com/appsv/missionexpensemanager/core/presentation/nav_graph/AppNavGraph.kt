@@ -29,7 +29,9 @@ fun AppNavGraph(
             val transactionState by transactionViewModel.transactionState.collectAsStateWithLifecycle()
             TransactionDashboardScreen(
                 transactionState = transactionState
-            )
+            ){
+
+            }
         }
     }
 }
