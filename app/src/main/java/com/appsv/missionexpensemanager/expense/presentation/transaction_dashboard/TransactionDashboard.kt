@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,6 +43,7 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondary
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondaryVariant
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishBlue
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
+import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavIcon
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavItem
@@ -53,9 +55,9 @@ import com.appsv.missionexpensemanager.expense.utils.transactionsDummyList
 @Preview
 @Composable
 fun TransactionDashboardScreen(
-    transactionState : TransactionState = TransactionState(),
-    onTransactionCardClick : (Transaction) -> Unit = {},
-    onFabClick : () -> Unit = {}
+    transactionState: TransactionState = TransactionState(),
+    onTransactionCardClick: (TransactionEntity) -> Unit = {},
+    onFabClick: () -> Unit = {}
 ) {
 
     val navItemList = listOf(
@@ -79,7 +81,8 @@ fun TransactionDashboardScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 navItemList.forEachIndexed { index, navItem ->
-                    val iconAndTextColor = if(selectedIndex == index) ColorSecondary else GrayishBlue
+                    val iconAndTextColor =
+                        if (selectedIndex == index) ColorSecondary else GrayishBlue
 
                     NavigationBarItem(
                         colors = NavigationBarItemDefaults.colors().copy(
@@ -99,6 +102,7 @@ fun TransactionDashboardScreen(
                                         tint = iconAndTextColor,
                                     )
                                 }
+
                                 is NavIcon.Resource -> {
                                     Icon(
                                         modifier = Modifier.size(35.dp),
@@ -137,7 +141,7 @@ fun TransactionDashboardScreen(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add Icon",
-                    tint =  Color.White
+                    tint = Color.White
                 )
                 Text(
                     text = "Add New",
@@ -166,25 +170,27 @@ fun TransactionDashboardScreen(
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ){
-                if(transactionState.isLoading){
+            ) {
+                if (transactionState.isLoading) {
                     CircularProgressIndicator()
-                }
-                else if(transactionState.transactionList.isNotEmpty()){
+                } else if (transactionState.transactionList.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(12.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
+                        itemsIndexed(
+                            items = transactionState.transactionList,
+                            key = { index, transaction -> transaction.id }
+                        ) { index, transaction ->
 
-                        items(transactionState.transactionList){
-                            TransactionCard(it){
-                                onTransactionCardClick(it)
+                            TransactionCard(transaction) {
+                                onTransactionCardClick(transaction)
                             }
+
                         }
                     }
-                }
-                else if(transactionState.error.isNotEmpty()){
+                } else if (transactionState.error.isNotEmpty()) {
                     Text(
                         text = transactionState.error,
                         fontSize = 16.sp,
@@ -192,8 +198,7 @@ fun TransactionDashboardScreen(
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
-                }
-                else{
+                } else {
                     Text(
                         text = "No transaction! \n Click on Add New button to add transactions",
                         fontSize = 16.sp,
@@ -205,7 +210,6 @@ fun TransactionDashboardScreen(
             }
 
         }
-
 
 
     }

@@ -1,11 +1,12 @@
 package com.appsv.missionexpensemanager.expense.domain.repository
 
+import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
 
-    suspend fun getTransactions() : Flow<List<Transaction>?>
+    suspend fun getTransactions() : Flow<List<TransactionEntity>?>
 
 
     /**

@@ -26,13 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPurple
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
+import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 
 @Preview
 @Composable
 fun TransactionCard(
-    transaction: Transaction =
-        Transaction(
+    transaction: TransactionEntity =
+        TransactionEntity(
+            id = "",
             transactionType = "Expense",
             transactionNumber = 1,
             description = "",

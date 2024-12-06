@@ -6,5 +6,6 @@ data class Transaction(
     val transactionNumber: Int = 0,
     val description : String = "",
     val date: String = "",
-    val amount: String = "0.00"
+    val amount: String = "0.00",
+    val isDeleteOptionRevealed : Boolean = false
 )

@@ -1,11 +1,16 @@
 package com.appsv.missionexpensemanager.expense.di
 
+import android.content.Context
+import androidx.room.Room
+import com.appsv.missionexpensemanager.expense.data.local.room.TransactionDao
+import com.appsv.missionexpensemanager.expense.data.local.room.TransactionRoomDB
 import com.appsv.missionexpensemanager.expense.data.repository.TransactionRepositoryImpl
 import com.appsv.missionexpensemanager.expense.domain.repository.TransactionRepository
 import com.google.firebase.database.FirebaseDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -22,8 +27,23 @@ object ExpenseModule {
 
     @Provides
     @Singleton
-    fun provideTransactionRepository(firebaseDatabase: FirebaseDatabase) : TransactionRepository {
-        return TransactionRepositoryImpl(firebaseDatabase)
+    fun provideTransactionRepository(firebaseDatabase: FirebaseDatabase,transactionDao: TransactionDao) : TransactionRepository {
+        return TransactionRepositoryImpl(firebaseDatabase,transactionDao)
     }
 
+    @Provides
+    @Singleton
+    fun provideTransactionRoomDatabase(@ApplicationContext context: Context): TransactionRoomDB {
+        return Room.databaseBuilder(
+            context,
+            TransactionRoomDB::class.java,
+            "transaction_database"
+        ).fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    fun provideTransactionDao(appDatabase: TransactionRoomDB): TransactionDao {
+        return appDatabase.transactionDao()
+    }
 }
