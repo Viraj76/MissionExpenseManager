@@ -1,6 +1,5 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_details
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appsv.missionexpensemanager.R
@@ -30,6 +29,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import com.appsv.missionexpensemanager.core.component.NoInternetDialog
+import com.appsv.missionexpensemanager.core.util.NetworkConnectionState
+import com.appsv.missionexpensemanager.core.util.rememberConnectivityState
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
 import kotlinx.coroutines.launch
 
@@ -42,6 +44,15 @@ fun TransactionDetailsScreen(
     events: (TransactionCreationEvents) -> Unit,
     goToTransactionDashBoard : () -> Unit = {}
 ) {
+    var showNoInternetDialogForEdit by rememberSaveable { mutableStateOf(false) }
+    var showNoInternetDialogForDelete by rememberSaveable { mutableStateOf(false) }
+    val connectionState by rememberConnectivityState()
+
+    val isConnected by remember(connectionState) {
+        derivedStateOf {
+            connectionState === NetworkConnectionState.Available
+        }
+    }
     var isYesNoDialogOpen by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     BackHandler {
@@ -64,7 +75,7 @@ fun TransactionDetailsScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        onEditIconClicked(selectedTransaction)
+                        if(isConnected) onEditIconClicked(selectedTransaction) else showNoInternetDialogForEdit = true
                     }) {
                         Icon(
                             painter = painterResource(R.drawable.edit),
@@ -73,7 +84,7 @@ fun TransactionDetailsScreen(
                         )
                     }
                     IconButton(onClick = {
-                        isYesNoDialogOpen = true
+                        if(isConnected) isYesNoDialogOpen = true else showNoInternetDialogForDelete = true
                     }) {
                         Icon(
                             painter = painterResource(R.drawable.delete),
@@ -172,6 +183,20 @@ fun TransactionDetailsScreen(
             },
             icon = R.drawable.delete
         )
+    }
+    if(showNoInternetDialogForEdit){
+        NoInternetDialog(
+            message = "To edit a transaction, please turn on the internet."
+        ){
+            showNoInternetDialogForEdit = false
+        }
+    }
+    if(showNoInternetDialogForDelete){
+        NoInternetDialog(
+            message = "To edit a transaction, please turn on the internet."
+        ){
+            showNoInternetDialogForDelete = false
+        }
     }
 }
 
