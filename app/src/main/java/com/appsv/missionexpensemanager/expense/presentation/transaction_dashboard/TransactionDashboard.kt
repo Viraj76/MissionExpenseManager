@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -50,12 +49,11 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
 import com.appsv.missionexpensemanager.core.util.NetworkConnectionState
 import com.appsv.missionexpensemanager.core.util.rememberConnectivityState
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
-import com.appsv.missionexpensemanager.expense.domain.models.Transaction
+import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavIcon
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavItem
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.SearchBar
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.TransactionCard
-import com.appsv.missionexpensemanager.expense.utils.transactionsDummyList
 
 
 @Preview
@@ -63,7 +61,8 @@ import com.appsv.missionexpensemanager.expense.utils.transactionsDummyList
 fun TransactionDashboardScreen(
     transactionState: TransactionState = TransactionState(),
     onTransactionCardClick: (TransactionEntity) -> Unit = {},
-    onFabClick: () -> Unit = {}
+    onFabClick: () -> Unit = {},
+    events: (TransactionCreationEvents) -> Unit = {},
 ) {
 
     var showNoInternetDialog by rememberSaveable { mutableStateOf(false) }
@@ -172,7 +171,15 @@ fun TransactionDashboardScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            SearchBar()
+            SearchBar(
+                text = transactionState.searchingText,
+                onExecuteSearch = {
+                    events(TransactionCreationEvents.StartSearchingTransactions)
+                },
+                onSearchingTransactions = {
+                    events(TransactionCreationEvents.SearchTransactions(it))
+                }
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -189,14 +196,14 @@ fun TransactionDashboardScreen(
             ) {
                 if (transactionState.isLoading) {
                     CircularProgressIndicator()
-                } else if (transactionState.transactionList.isNotEmpty()) {
+                } else if (transactionState.modifiedFilteredTransactionList.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(12.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         itemsIndexed(
-                            items = transactionState.transactionList,
+                            items = transactionState.modifiedFilteredTransactionList,
                             key = { index, transaction -> transaction.id }
                         ) { index, transaction ->
 
@@ -230,10 +237,10 @@ fun TransactionDashboardScreen(
 
     }
 
-    if(showNoInternetDialog){
+    if (showNoInternetDialog) {
         NoInternetDialog(
             message = "To add a transaction, please turn on the internet."
-        ){
+        ) {
             showNoInternetDialog = false
         }
     }

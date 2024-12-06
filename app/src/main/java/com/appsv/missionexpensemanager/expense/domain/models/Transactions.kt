@@ -7,5 +7,4 @@ data class Transaction(
     val description : String = "",
     val date: String = "",
     val amount: String = "0.00",
-    val isDeleteOptionRevealed : Boolean = false
 )

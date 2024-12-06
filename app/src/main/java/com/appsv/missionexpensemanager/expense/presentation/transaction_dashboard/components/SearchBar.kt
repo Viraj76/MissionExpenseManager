@@ -1,10 +1,10 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -18,22 +18,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.LightGrayishBlue
+import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
+import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.TransactionState
 
 
 @Composable
-fun SearchBar() {
+fun SearchBar(
+    text : String,
+    onExecuteSearch : () -> Unit,
+    onSearchingTransactions : (String) -> Unit
+) {
 
     Box(
-        modifier = Modifier.fillMaxWidth().background(Color.White),
-
-        ){
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+    )
+    {
         TextField(
-            value = "",
-            onValueChange = { /* Search functionality */ },
+            value = text,
+            onValueChange = {
+                onSearchingTransactions(it)
+                onExecuteSearch()
+            },
             modifier = Modifier
                 .padding(horizontal = 18.dp, vertical = 12.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp)), // Apply rounded corners here
+                .clip(RoundedCornerShape(16.dp)),
             placeholder = { Text("Search") },
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
             colors = TextFieldDefaults.colors().copy(

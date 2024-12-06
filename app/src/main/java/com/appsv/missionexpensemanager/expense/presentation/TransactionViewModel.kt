@@ -1,5 +1,6 @@
 package com.appsv.missionexpensemanager.expense.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
@@ -35,6 +36,14 @@ class TransactionViewModel
             is TransactionCreationEvents.DeleteTransaction -> {
                 deleteTransaction(events.id)
             }
+
+            is TransactionCreationEvents.SearchTransactions -> {
+                _transactionsState.value = transactionState.value.copy(searchingText = events.searchingText)
+            }
+
+            TransactionCreationEvents.StartSearchingTransactions -> {
+                searchTransactions()
+            }
         }
     }
 
@@ -45,20 +54,35 @@ class TransactionViewModel
     }
 
 
+    private fun searchTransactions() {
+        val searchText = transactionState.value.searchingText.lowercase()
+        val searchedTransactionsList = transactionState.value.originalTransactionList.filter {
+            it.description.lowercase().contains(searchText) ||
+            it.transactionType.lowercase().contains(searchText) ||
+            it.amount.lowercase().contains(searchText) ||
+            it.transactionNumber.toString().lowercase().contains(searchText) ||
+            it.date.toString().lowercase().contains(searchText)
+        }
+        Log.d("Searcingtext", searchedTransactionsList.size.toString())
+
+        _transactionsState.value = transactionState.value.copy(modifiedFilteredTransactionList = searchedTransactionsList)
+    }
     private fun getTransactions() {
         viewModelScope.launch {
             transactionRepository.getTransactions().collect { transactionList ->
+                Log.d("listtt",transactionList.toString())
                 if(transactionList != null){
                     _transactionsState.value = transactionState.value.copy(
                         isLoading = false,
-                        transactionList = transactionList,
+                        originalTransactionList = transactionList,
                         error = ""
                     )
+                    searchTransactions()
                 }
                 else{
                     _transactionsState.value = transactionState.value.copy(
                         isLoading = false,
-                        transactionList = emptyList(),
+                        originalTransactionList = emptyList(),
                         error = "Error! Try Again Later."
                     )
                 }

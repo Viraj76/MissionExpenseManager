@@ -45,10 +45,12 @@ fun AppNavGraph(
                         date = it.date,
                         amount = it.amount
                     ))
-                }
-            ){
-                navController.navigate(TransactionCreationScreen())
-            }
+                },
+                onFabClick = {
+                    navController.navigate(TransactionCreationScreen())
+                },
+                events = transactionViewModel::onEvent
+            )
         }
 
         composable<TransactionCreationScreen>{

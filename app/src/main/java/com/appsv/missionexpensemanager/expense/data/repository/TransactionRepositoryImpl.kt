@@ -76,6 +76,5 @@ fun Transaction.toTransactionEntity(): TransactionEntity {
         description = this.description,
         date = this.date,
         amount = this.amount,
-        isDeleteOptionRevealed = this.isDeleteOptionRevealed
     )
 }
