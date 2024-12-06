@@ -1,5 +1,6 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_details
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,18 +26,22 @@ import com.appsv.missionexpensemanager.R
 import com.appsv.missionexpensemanager.core.component.YesNoAlertDialog
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
+import kotlinx.coroutines.launch
 
-@Preview
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionDetailsScreen(
     selectedTransaction : Transaction = Transaction(),
-    onEditIconClicked : (Transaction) -> Unit = {}
+    onEditIconClicked : (Transaction) -> Unit = {},
+    events: (TransactionCreationEvents) -> Unit
 ) {
     var isYesNoDialogOpen by rememberSaveable { mutableStateOf(false) }
-
+    val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -149,11 +154,13 @@ fun TransactionDetailsScreen(
         YesNoAlertDialog(
             message = "Are you sure you want to delete this transaction?",
             onYes = {
-                //delete
+                Log.d("IDDDD",selectedTransaction.id)
+                scope.launch{
+                    events(TransactionCreationEvents.DeleteTransaction(selectedTransaction.id))
+                }
                 isYesNoDialogOpen = false
             },
             onNo = {
-
                 isYesNoDialogOpen = false
             },
             icon = R.drawable.delete

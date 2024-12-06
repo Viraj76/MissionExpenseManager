@@ -300,7 +300,7 @@ fun saveOrUpdateTransaction(
         )
     }
     scope.launch(Dispatchers.IO) {
-        events(TransactionCreationEvents.SaveTransaction(transaction))
+        events(TransactionCreationEvents.SaveOrUpdateTransaction(transaction))
     }
 }
 

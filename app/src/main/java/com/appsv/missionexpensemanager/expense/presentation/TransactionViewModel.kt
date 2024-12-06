@@ -28,11 +28,16 @@ class TransactionViewModel
         events : TransactionCreationEvents,
     ){
         when(events){
-            is TransactionCreationEvents.SaveTransaction -> {
+            is TransactionCreationEvents.SaveOrUpdateTransaction -> {
                 saveTransaction(events.transaction)
+            }
+
+            is TransactionCreationEvents.DeleteTransaction -> {
+                deleteTransaction(events.id)
             }
         }
     }
+
     private fun saveTransaction(transaction: Transaction) {
         viewModelScope.launch{
             transactionRepository.saveOrUpdateTransaction(transaction)
@@ -61,5 +66,11 @@ class TransactionViewModel
             }
         }
     }
+    private fun deleteTransaction(id : String){
+        viewModelScope.launch{
+            transactionRepository.deleteTransaction(id)
 
+        }
+
+    }
 }

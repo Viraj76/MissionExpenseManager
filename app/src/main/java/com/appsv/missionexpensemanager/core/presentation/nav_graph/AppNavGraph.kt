@@ -75,12 +75,12 @@ fun AppNavGraph(
         }
 
         composable<EditTransactionScreen>{
+            val transactionViewModel  = hiltViewModel<TransactionViewModel>()
 
             val args = it.toRoute<EditTransactionScreen>()
 
-
-
             TransactionDetailsScreen(
+                events = transactionViewModel::onEvent,
                 selectedTransaction = Transaction(
                     id = args.id,
                     transactionType = args.transactionType,

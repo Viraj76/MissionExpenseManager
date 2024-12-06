@@ -19,4 +19,6 @@ interface TransactionRepository {
      * We also have updateChildren() function but this too works well.
      */
     suspend fun saveOrUpdateTransaction(transaction: Transaction)
+
+    suspend fun deleteTransaction(id : String)
 }

@@ -38,4 +38,8 @@ class TransactionRepositoryImpl @Inject constructor(private val firebaseDatabase
     override suspend fun saveOrUpdateTransaction(transaction: Transaction) {
         transactionRef.child(transaction.id).setValue(transaction)
     }
+
+    override suspend fun deleteTransaction(id: String) {
+        transactionRef.child(id).removeValue()
+    }
 }
