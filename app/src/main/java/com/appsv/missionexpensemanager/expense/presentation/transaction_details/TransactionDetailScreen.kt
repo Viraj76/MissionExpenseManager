@@ -11,6 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appsv.missionexpensemanager.R
+import com.appsv.missionexpensemanager.core.component.YesNoAlertDialog
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +35,8 @@ fun TransactionDetailsScreen(
     selectedTransaction : Transaction = Transaction(),
     onEditIconClicked : (Transaction) -> Unit = {}
 ) {
+    var isYesNoDialogOpen by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,7 +60,9 @@ fun TransactionDetailsScreen(
                             tint = Color(0xFF6200EA)
                         )
                     }
-                    IconButton(onClick = { /* Handle delete action */ }) {
+                    IconButton(onClick = {
+                        isYesNoDialogOpen = true
+                    }) {
                         Icon(
                             painter = painterResource(R.drawable.delete),
                             contentDescription = "Delete",
@@ -133,6 +143,21 @@ fun TransactionDetailsScreen(
                 }
             }
         }
+    }
+
+    if(isYesNoDialogOpen){
+        YesNoAlertDialog(
+            message = "Are you sure you want to delete this transaction?",
+            onYes = {
+                //delete
+                isYesNoDialogOpen = false
+            },
+            onNo = {
+
+                isYesNoDialogOpen = false
+            },
+            icon = R.drawable.delete
+        )
     }
 }
 
