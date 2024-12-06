@@ -34,7 +34,9 @@ class TransactionViewModel
     }
 
     private fun saveTransaction(transaction: Transaction) {
-
+        viewModelScope.launch{
+            transactionRepository.saveTransaction(transaction)
+        }
     }
 
 

@@ -36,6 +36,6 @@ class TransactionRepositoryImpl @Inject constructor(private val firebaseDatabase
     }
 
     override suspend fun saveTransaction(transaction: Transaction) {
-        TODO("Not yet implemented")
+        transactionRef.setValue(transaction)
     }
 }
