@@ -2,11 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
     namespace = "com.appsv.missionexpensemanager"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.appsv.missionexpensemanager"
@@ -56,4 +59,21 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    // navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
+
+    // Room
+    implementation("androidx.room:room-ktx:2.5.1")
+    ksp("androidx.room:room-compiler:2.5.1")
+    implementation("androidx.room:room-paging:2.5.1")
+
+    //Dagger Hilt
+    val hilt = "2.50"
+    implementation ("com.google.dagger:hilt-android:$hilt")
+    ksp("com.google.dagger:hilt-compiler:$hilt")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
 }
