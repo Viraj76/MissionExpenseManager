@@ -48,4 +48,4 @@ val transactionsDummyList = listOf(
  * Firebase Paths
  */
 
-const val SAVE_TRANSACTION = "Transactions"
+const val TRANSACTION = "Transactions"
