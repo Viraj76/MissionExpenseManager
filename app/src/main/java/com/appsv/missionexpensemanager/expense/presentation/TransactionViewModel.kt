@@ -26,9 +26,9 @@ class TransactionViewModel
     }
 
     fun onEvent(
-        events : TransactionCreationEvents,
-    ){
-        when(events){
+        events: TransactionCreationEvents,
+    ) {
+        when (events) {
             is TransactionCreationEvents.SaveOrUpdateTransaction -> {
                 saveTransaction(events.transaction)
             }
@@ -38,17 +38,38 @@ class TransactionViewModel
             }
 
             is TransactionCreationEvents.SearchTransactions -> {
-                _transactionsState.value = transactionState.value.copy(searchingText = events.searchingText)
+                _transactionsState.value =
+                    transactionState.value.copy(searchingText = events.searchingText)
             }
 
-            TransactionCreationEvents.StartSearchingTransactions -> {
+            is TransactionCreationEvents.StartSearchingTransactions -> {
                 searchTransactions()
+            }
+
+            is TransactionCreationEvents.FilterTransactions -> {
+                filterTransactions(events.label)
             }
         }
     }
 
+    private fun filterTransactions(query: String) {
+        val originalList = transactionState.value.originalTransactionList
+        val filteredList = if (query == "All") {
+            originalList
+        } else {
+            originalList.filter { transaction ->
+                transaction.transactionType.contains(query, ignoreCase = true)
+            }
+        }
+
+        _transactionsState.value = transactionState.value.copy(
+            modifiedFilteredTransactionList = filteredList
+        )
+    }
+
+
     private fun saveTransaction(transaction: Transaction) {
-        viewModelScope.launch{
+        viewModelScope.launch {
             transactionRepository.saveOrUpdateTransaction(transaction)
         }
     }
@@ -58,28 +79,28 @@ class TransactionViewModel
         val searchText = transactionState.value.searchingText.lowercase()
         val searchedTransactionsList = transactionState.value.originalTransactionList.filter {
             it.description.lowercase().contains(searchText) ||
-            it.transactionType.lowercase().contains(searchText) ||
-            it.amount.lowercase().contains(searchText) ||
-            it.transactionNumber.toString().lowercase().contains(searchText) ||
-            it.date.toString().lowercase().contains(searchText)
+                    it.transactionType.lowercase().contains(searchText) ||
+                    it.amount.lowercase().contains(searchText) ||
+                    it.transactionNumber.toString().lowercase().contains(searchText) ||
+                    it.date.toString().lowercase().contains(searchText)
         }
-        Log.d("Searcingtext", searchedTransactionsList.size.toString())
 
-        _transactionsState.value = transactionState.value.copy(modifiedFilteredTransactionList = searchedTransactionsList)
+        _transactionsState.value =
+            transactionState.value.copy(modifiedFilteredTransactionList = searchedTransactionsList)
     }
+
     private fun getTransactions() {
         viewModelScope.launch {
             transactionRepository.getTransactions().collect { transactionList ->
-                Log.d("listtt",transactionList.toString())
-                if(transactionList != null){
+                Log.d("listtt", transactionList.toString())
+                if (transactionList != null) {
                     _transactionsState.value = transactionState.value.copy(
                         isLoading = false,
                         originalTransactionList = transactionList,
                         error = ""
                     )
                     searchTransactions()
-                }
-                else{
+                } else {
                     _transactionsState.value = transactionState.value.copy(
                         isLoading = false,
                         originalTransactionList = emptyList(),
@@ -90,8 +111,9 @@ class TransactionViewModel
             }
         }
     }
-    private fun deleteTransaction(id : String){
-        viewModelScope.launch{
+
+    private fun deleteTransaction(id: String) {
+        viewModelScope.launch {
             transactionRepository.deleteTransaction(id)
 
         }

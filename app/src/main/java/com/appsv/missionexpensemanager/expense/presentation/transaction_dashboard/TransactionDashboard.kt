@@ -50,6 +50,7 @@ import com.appsv.missionexpensemanager.core.util.NetworkConnectionState
 import com.appsv.missionexpensemanager.core.util.rememberConnectivityState
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
+import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.CustomFilterChip
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavIcon
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavItem
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.SearchBar
@@ -74,6 +75,9 @@ fun TransactionDashboardScreen(
         }
     }
 
+    var selectedChip by rememberSaveable { mutableStateOf("All") }
+    val chipOptions = listOf("All", "Expense", "Income")
+    val chipColors = listOf(Color.Blue, Color.Red, Color.Green)
 
     val navItemList = listOf(
         NavItem("Dashboard", icon = NavIcon.Vector(Icons.Default.Home)),
@@ -190,6 +194,24 @@ fun TransactionDashboardScreen(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(horizontal = 12.dp)
+            ) {
+                chipOptions.forEachIndexed { index, label ->
+                    CustomFilterChip(
+                        label = label,
+                        color = chipColors[index],
+                        selected = selectedChip == label,
+                        onClick = {
+                            selectedChip = label
+                            events(TransactionCreationEvents.FilterTransactions(selectedChip))
+                        }
+                    )
+                }
+            }
+
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center

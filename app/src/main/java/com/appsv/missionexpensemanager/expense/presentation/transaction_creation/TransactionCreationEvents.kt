@@ -11,4 +11,6 @@ sealed class TransactionCreationEvents {
     data object StartSearchingTransactions  : TransactionCreationEvents()
 
     data class SearchTransactions(val searchingText : String) : TransactionCreationEvents()
+
+    data class FilterTransactions(val label : String) : TransactionCreationEvents()
 }
