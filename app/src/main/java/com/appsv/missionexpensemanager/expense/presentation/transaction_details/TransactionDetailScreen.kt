@@ -31,7 +31,7 @@ import com.appsv.missionexpensemanager.R
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpenseDetailScreen() {
+fun EditTransactionScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
