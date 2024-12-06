@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.appsv.missionexpensemanager.core.presentation.nav_graph.AppNavGraph
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.MissionExpenseManagerTheme
+import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.RecordExpenseScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,11 +23,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MissionExpenseManagerTheme {
-                    AppNavGraph(
-                    )
-                }
+                RecordExpenseScreen()
             }
         }
+    }
 
 }
 
