@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.domain.repository.TransactionRepository
+import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.TransactionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,18 @@ class TransactionViewModel
 
     init {
         getTransactions()
+    }
+
+    fun onEvent(event : TransactionCreationEvents){
+        when(event){
+            is TransactionCreationEvents.SaveTransaction -> {
+                saveTransaction(event.transaction)
+            }
+        }
+    }
+
+    private fun saveTransaction(transaction: Transaction) {
+
     }
 
 

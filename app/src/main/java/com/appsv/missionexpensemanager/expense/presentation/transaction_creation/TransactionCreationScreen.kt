@@ -37,11 +37,18 @@ import com.appsv.missionexpensemanager.expense.presentation.transaction_creation
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.RequiredText
 import com.appsv.missionexpensemanager.expense.utils.formatDate
 import com.appsv.missionexpensemanager.expense.utils.isNumberOrDouble
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionCreationScreen() {
+fun TransactionCreationScreen(
+    events: (TransactionCreationEvents) -> Unit
+) {
+
+    val scope = rememberCoroutineScope()
+
 
     var showCalendarDialog by remember { mutableStateOf(false) }
     var isEnteringAmount by remember { mutableStateOf(false) }
@@ -230,6 +237,9 @@ fun TransactionCreationScreen() {
                                 amount = enteredTotalAmount
                             )
 
+                            scope.launch(Dispatchers.IO){
+                                events(TransactionCreationEvents.SaveTransaction(transaction))
+                            }
 
                         },
                         modifier = Modifier
@@ -255,10 +265,10 @@ fun TransactionCreationScreen() {
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewRecordExpenseScreen() {
-    TransactionCreationScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewRecordExpenseScreen() {
+//    TransactionCreationScreen()
+//}
 
 

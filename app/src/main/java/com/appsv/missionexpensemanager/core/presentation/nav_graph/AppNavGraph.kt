@@ -28,6 +28,7 @@ fun AppNavGraph(
 
         composable<TransactionDashboardScreen>{
             val transactionViewModel  = hiltViewModel<TransactionViewModel>()
+
             val transactionState by transactionViewModel.transactionState.collectAsStateWithLifecycle()
             TransactionDashboardScreen(
                 transactionState = transactionState
@@ -37,7 +38,11 @@ fun AppNavGraph(
         }
 
         composable<TransactionCreationScreen>{
-            TransactionCreationScreen()
+            val transactionViewModel  = hiltViewModel<TransactionViewModel>()
+
+            TransactionCreationScreen(
+                events = transactionViewModel::onEvent
+            )
         }
     }
 }
