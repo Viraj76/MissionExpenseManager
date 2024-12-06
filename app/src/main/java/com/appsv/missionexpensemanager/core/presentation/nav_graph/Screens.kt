@@ -5,3 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object TransactionDashboardScreen
+
+@Serializable
+data object TransactionCreationScreen

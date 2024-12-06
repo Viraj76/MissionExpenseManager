@@ -36,11 +36,12 @@ import com.appsv.missionexpensemanager.expense.presentation.transaction_creation
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.ExpenseIncomeToggle
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.RequiredText
 import com.appsv.missionexpensemanager.expense.utils.formatDate
+import com.appsv.missionexpensemanager.expense.utils.isNumberOrDouble
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RecordExpenseScreen() {
+fun TransactionCreationScreen() {
 
     var showCalendarDialog by remember { mutableStateOf(false) }
     var isEnteringAmount by remember { mutableStateOf(false) }
@@ -95,16 +96,18 @@ fun RecordExpenseScreen() {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                ExpenseIncomeToggle(selectedOption){
+                ExpenseIncomeToggle(selectedOption) {
                     selectedOption = it
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().background(Color.White),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White),
 
-                    ){
+                    ) {
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
@@ -129,13 +132,12 @@ fun RecordExpenseScreen() {
                         )
                     }
                 }
-                if(showCalendarDialog){
+                if (showCalendarDialog) {
                     DatePickerModal(
-                        onDateSelected = {selectedDate->
-                            date = if(selectedDate != null){
+                        onDateSelected = { selectedDate ->
+                            date = if (selectedDate != null) {
                                 formatDate(selectedDate)
-                            }
-                            else{
+                            } else {
                                 formatDate(System.currentTimeMillis())
                             }
                         },
@@ -146,9 +148,11 @@ fun RecordExpenseScreen() {
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(
-                    modifier = Modifier.fillMaxWidth().background(Color.White),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White),
 
-                    ){
+                    ) {
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
@@ -174,8 +178,10 @@ fun RecordExpenseScreen() {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().background(Color.White),
-                ){
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White),
+                ) {
 
                     Row(
                         modifier = Modifier
@@ -192,9 +198,10 @@ fun RecordExpenseScreen() {
                         )
                         AmountTextField(
                             isEnteringAmount = isEnteringAmount,
-                            onDone = {totalAmount->
+                            onDone = { totalAmount ->
                                 isEnteringAmount = false
-                                enteredTotalAmount = if(totalAmount.isNotEmpty()) totalAmount else initialEnteredTotalAmount
+                                enteredTotalAmount =
+                                    if (totalAmount.isNotEmpty()) totalAmount else initialEnteredTotalAmount
                             },
                             onAmountClick = {
                                 isEnteringAmount = true
@@ -209,8 +216,10 @@ fun RecordExpenseScreen() {
                 Spacer(modifier = Modifier.weight(1f))
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().background(Color.White),
-                ){
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White),
+                ) {
                     Button(
                         onClick = {
 
@@ -220,11 +229,12 @@ fun RecordExpenseScreen() {
                                 date = date,
                                 amount = enteredTotalAmount
                             )
-                            Log.d("Transaction", transaction.toString())
-                            validateValues()
+
+
                         },
                         modifier = Modifier
-                            .fillMaxWidth().padding(10.dp),
+                            .fillMaxWidth()
+                            .padding(10.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors().copy(
                             containerColor = ColorPrimary
@@ -245,27 +255,10 @@ fun RecordExpenseScreen() {
     )
 }
 
-@Composable
-fun ToggleButton(selected: Boolean, onSelect: () -> Unit, text: String) {
-    val backgroundColor = if (selected) Color.Black else Color.White
-    val contentColor = if (selected) Color.White else Color.Black
-
-    Button(
-        onClick = onSelect,
-
-        shape = RoundedCornerShape(50),
-    ) {
-        Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Medium)
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecordExpenseScreen() {
-    RecordExpenseScreen()
+    TransactionCreationScreen()
 }
 
 
-fun validateValues(){
-
-}

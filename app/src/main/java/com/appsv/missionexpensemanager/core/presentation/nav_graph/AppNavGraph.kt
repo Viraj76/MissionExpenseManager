@@ -12,6 +12,8 @@ import com.appsv.missionexpensemanager.expense.presentation.TransactionViewModel
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.TransactionDashboardScreen
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationScreen
+
 @Composable
 fun AppNavGraph(
     modifier: Modifier = Modifier
@@ -30,8 +32,12 @@ fun AppNavGraph(
             TransactionDashboardScreen(
                 transactionState = transactionState
             ){
-
+                navController.navigate(TransactionCreationScreen)
             }
+        }
+
+        composable<TransactionCreationScreen>{
+            TransactionCreationScreen()
         }
     }
 }
