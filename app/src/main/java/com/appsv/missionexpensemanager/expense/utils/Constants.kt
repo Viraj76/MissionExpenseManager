@@ -43,3 +43,9 @@ val transactionsDummyList = listOf(
         amount = 60.75
     )
 )
+
+/**
+ * Firebase Paths
+ */
+
+const val SAVE_TRANSACTION = "Transactions"
