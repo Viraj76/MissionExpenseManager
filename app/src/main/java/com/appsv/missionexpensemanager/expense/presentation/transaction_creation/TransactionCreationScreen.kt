@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appsv.missionexpensemanager.R
@@ -37,7 +35,7 @@ import com.appsv.missionexpensemanager.expense.presentation.transaction_creation
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.ExpenseIncomeToggle
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.RequiredText
 import com.appsv.missionexpensemanager.expense.utils.formatDate
-import com.appsv.missionexpensemanager.expense.utils.isNumberOrDouble
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -59,6 +57,7 @@ fun TransactionCreationScreen(
     }
     var showCalendarDialog by remember { mutableStateOf(false) }
     var isEnteringAmount by remember { mutableStateOf(false) }
+
 
     val initialDate = if(isEditMode) selectedTransaction.date else formatDate(System.currentTimeMillis())
     val initialDescription = if(isEditMode) selectedTransaction.description else ""
@@ -237,17 +236,18 @@ fun TransactionCreationScreen(
                     Button(
                         onClick = {
 
-                            val transaction = Transaction(
-                                id = UUID.randomUUID().toString(),
-                                transactionType = selectedOption,
+                            saveOrUpdateTransaction(
+                                isEditMode = isEditMode,
+                                selectedTransaction = selectedTransaction,
+                                selectedOption = selectedOption,
                                 description = description,
                                 date = date,
-                                amount = enteredTotalAmount
+                                enteredTotalAmount = enteredTotalAmount,
+                                scope = scope,
+                                events = events
                             )
 
-                            scope.launch(Dispatchers.IO){
-                                events(TransactionCreationEvents.SaveTransaction(transaction))
-                            }
+
 
                         },
                         modifier = Modifier
@@ -272,11 +272,36 @@ fun TransactionCreationScreen(
         }
     )
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewRecordExpenseScreen() {
-//    TransactionCreationScreen()
-//}
+fun saveOrUpdateTransaction(
+    isEditMode: Boolean,
+    selectedTransaction: Transaction,
+    selectedOption: String,
+    description: String,
+    date: String,
+    enteredTotalAmount: String,
+    scope: CoroutineScope,
+    events: (TransactionCreationEvents) -> Unit
+) {
+    val transaction = if (isEditMode) {
+        Transaction(
+            id = selectedTransaction.id ,
+            transactionType = selectedOption,
+            description = description,
+            date = date,
+            amount = enteredTotalAmount
+        )
+    } else {
+        Transaction(
+            id = UUID.randomUUID().toString(),
+            transactionType = selectedOption,
+            description = description,
+            date = date,
+            amount = enteredTotalAmount
+        )
+    }
+    scope.launch(Dispatchers.IO) {
+        events(TransactionCreationEvents.SaveTransaction(transaction))
+    }
+}
 
 

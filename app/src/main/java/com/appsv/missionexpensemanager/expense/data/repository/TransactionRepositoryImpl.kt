@@ -35,7 +35,7 @@ class TransactionRepositoryImpl @Inject constructor(private val firebaseDatabase
         awaitClose { transactionRef.removeEventListener(listener) }
     }
 
-    override suspend fun saveTransaction(transaction: Transaction) {
+    override suspend fun saveOrUpdateTransaction(transaction: Transaction) {
         transactionRef.child(transaction.id).setValue(transaction)
     }
 }
