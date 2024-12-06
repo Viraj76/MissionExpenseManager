@@ -169,7 +169,16 @@ fun TransactionDashboardScreen(
                     CircularProgressIndicator()
                 }
                 else if(transactionState.transactionList.isNotEmpty()){
-                    TransactionDashboardContent(modifier = Modifier.padding(innerPadding))
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+
+                        items(transactionState.transactionList){
+                            TransactionCard(it)
+                        }
+                    }
                 }
                 else if(transactionState.error.isNotEmpty()){
                     Text(
@@ -199,29 +208,11 @@ fun TransactionDashboardScreen(
 
 }
 
-@Composable
-fun TransactionDashboardContent(modifier: Modifier = Modifier) {
-
-    RecentTransactionsLazyList()
-
-
-}
 
 
 
-@Composable
-fun RecentTransactionsLazyList() {
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(12.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
 
-        items(transactionsDummyList){
-            TransactionCard(it)
-        }
-    }
-}
+
 
 
 
