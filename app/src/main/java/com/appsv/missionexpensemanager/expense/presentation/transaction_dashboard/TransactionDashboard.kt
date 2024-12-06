@@ -48,7 +48,7 @@ import com.appsv.missionexpensemanager.expense.utils.transactionsDummyList
 
 @Preview
 @Composable
-fun TransactionDashboard(modifier: Modifier = Modifier) {
+fun TransactionDashboardScreen(modifier: Modifier = Modifier) {
 
     val navItemList = listOf(
         NavItem("Dashboard", icon = NavIcon.Vector(Icons.Default.Home)),
