@@ -1,5 +1,4 @@
 
-https://github.com/user-attachments/assets/05e8aaaa-e735-47b1-8549-1fe440e917d9
 
 # Mission - Expense Manager
 
