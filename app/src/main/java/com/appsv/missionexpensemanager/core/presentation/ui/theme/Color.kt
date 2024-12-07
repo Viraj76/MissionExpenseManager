@@ -1,6 +1,5 @@
 package com.appsv.missionexpensemanager.core.presentation.ui.theme
 
-import android.provider.CalendarContract.Colors
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -61,7 +60,5 @@ data class ColorPalette(
     val LightGrayishBlue: Color,
     val GrayishBlue: Color
 )
-
-// Example of usage in your theme setup
 
 

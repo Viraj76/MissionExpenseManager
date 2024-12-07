@@ -13,6 +13,10 @@ import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+
+/**
+ * Responsible for monitoring Internet Connection
+ */
 sealed interface NetworkConnectionState {
     data object Available : NetworkConnectionState
     data object Unavailable : NetworkConnectionState

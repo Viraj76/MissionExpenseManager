@@ -1,11 +1,9 @@
 package com.appsv.missionexpensemanager.core.presentation.nav_graph
 
-import androidx.room.Transaction
 import kotlinx.serialization.Serializable
 
 
-@Serializable
-data object TransactionDashboardScreen
+
 
 @Serializable
 data object MainScreen

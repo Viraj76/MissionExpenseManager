@@ -1,6 +1,5 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -19,12 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.ImeOptions
 import androidx.compose.ui.unit.dp
-import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondaryVariant
-import com.appsv.missionexpensemanager.core.presentation.ui.theme.LightGrayishBlue
-import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
-import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.TransactionState
 
 
 @Composable

@@ -242,15 +242,5 @@ fun TransactionDetailsScreen(
     }
 }
 
-@Composable
-fun DetailRow(
-    label: String,
-    value: String,
-    isBold: Boolean = false,
-    isDarkMode : Boolean, ) {
-
-
-}
-
 
 

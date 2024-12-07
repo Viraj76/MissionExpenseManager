@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.Modifier
@@ -30,7 +29,7 @@ fun NoInternetDialog(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                val icon: Painter = painterResource(id = R.drawable.baseline_wifi_off_24) // Replace with your actual icon
+                val icon: Painter = painterResource(id = R.drawable.baseline_wifi_off_24)
                 Icon(painter = icon, contentDescription = "No Internet", modifier = Modifier.size(80.dp), tint = Color.Red)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(

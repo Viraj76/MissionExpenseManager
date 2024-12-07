@@ -2,7 +2,6 @@ package com.appsv.missionexpensemanager.expense.presentation.transaction_creatio
 
 
 import AmountTextField
-import android.util.Log
 import androidx.activity.compose.BackHandler
 
 import androidx.compose.foundation.background
@@ -33,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appsv.missionexpensemanager.R
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorPrimary
-import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondaryVariant
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPurple
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
@@ -55,9 +53,11 @@ fun TransactionCreationScreen(
     events: (TransactionCreationEvents) -> Unit,
     goToTransactionDashBoard: () -> Unit,
 ) {
+
     BackHandler {
         goToTransactionDashBoard()
     }
+
     val isEditMode by remember { mutableStateOf(selectedTransaction != Transaction()) }
 
     val scope = rememberCoroutineScope()
@@ -118,7 +118,7 @@ fun TransactionCreationScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .verticalScroll(rememberScrollState()) // Enable scrolling
+                    .verticalScroll(rememberScrollState())
             ) {
                 ExpenseIncomeToggle(selectedOption) {
                     selectedOption = it

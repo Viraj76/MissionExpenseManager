@@ -1,40 +1,27 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard
 
-
-import android.R.id.message
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,14 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appsv.missionexpensemanager.R
 import com.appsv.missionexpensemanager.core.component.NoInternetDialog
-import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorPrimary
-import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondary
-import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondaryVariant
-import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishBlue
-import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.LighterDarkColor
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.core.util.NetworkConnectionState
 import com.appsv.missionexpensemanager.core.util.rememberConnectivityState
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
+import com.appsv.missionexpensemanager.expense.domain.models.ui_models.TransactionState
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.CustomFilterChip
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavIcon
@@ -61,15 +46,17 @@ import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboar
 
 @Preview
 @Composable
-fun TransactionDashboardScreen(
+fun Dashboard(
     transactionState: TransactionState = TransactionState(),
     onTransactionCardClick: (TransactionEntity) -> Unit = {},
     onFabClick: () -> Unit = {},
-    events: (TransactionCreationEvents) -> Unit = {},
+    events: (TransactionCreationEvents) -> Unit = {}
 ) {
-
     var showNoInternetDialog by rememberSaveable { mutableStateOf(false) }
     val connectionState by rememberConnectivityState()
+
+    val getColors = getColorsForTheme()
+    val isDarkTheme = isSystemInDarkTheme()
 
     val isConnected by remember(connectionState) {
         derivedStateOf {
@@ -86,33 +73,27 @@ fun TransactionDashboardScreen(
         NavItem("Settings", icon = NavIcon.Resource(R.drawable.baseline_more_horiz_24))
     )
 
-
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
-    }
-
+    var selectedIndex by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = ColorSecondaryVariant,
+        containerColor = getColors.ColorSecondaryVariant,
         bottomBar = {
             NavigationBar(
-                containerColor = Color.White
+                containerColor = if(!isDarkTheme) Color.White else LighterDarkColor
             ) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 navItemList.forEachIndexed { index, navItem ->
                     val iconAndTextColor =
-                        if (selectedIndex == index) ColorSecondary else GrayishBlue
+                        if (selectedIndex == index) getColors.ColorSecondary else getColors.GrayishBlue
 
                     NavigationBarItem(
                         colors = NavigationBarItemDefaults.colors().copy(
                             selectedIndicatorColor = Color.Transparent
                         ),
                         selected = selectedIndex == index,
-                        onClick = {
-                            selectedIndex = index
-                        },
+                        onClick = { selectedIndex = index },
                         icon = {
                             when (val icon = navItem.icon) {
                                 is NavIcon.Vector -> {
@@ -120,7 +101,7 @@ fun TransactionDashboardScreen(
                                         modifier = Modifier.size(35.dp),
                                         imageVector = icon.imageVector,
                                         contentDescription = navItem.label,
-                                        tint = iconAndTextColor,
+                                        tint = iconAndTextColor
                                     )
                                 }
 
@@ -145,38 +126,80 @@ fun TransactionDashboardScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
             }
-
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    if (isConnected) onFabClick() else showNoInternetDialog = true
-
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 0.dp, top = 0.dp, start = 100.dp, end = 100.dp),
-                containerColor = ColorPrimary,
-                shape = CircleShape
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Icon",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Add New",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
+            if (selectedIndex == 0) {
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        if (isConnected) onFabClick() else showNoInternetDialog = true
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 0.dp, top = 0.dp, start = 100.dp, end = 100.dp),
+                    containerColor = getColors.ColorPrimary,
+                    shape = CircleShape
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Icon",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Add New",
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
+                }
             }
         },
-        floatingActionButtonPosition = FabPosition.Center,
-    )
-    { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding)
+        floatingActionButtonPosition = FabPosition.Center
+    ) { innerPadding ->
+        when (selectedIndex) {
+            0 -> TransactionDashboardContent(
+                transactionState = transactionState,
+                onTransactionCardClick = onTransactionCardClick,
+                events = events,
+                innerPadding = innerPadding,
+                selectedChip = selectedChip,
+                chipOptions = chipOptions,
+                chipColors = chipColors,
+                onChipSelected = { selectedChip = it }
+            )
+
+            1 -> SettingsScreen(innerPadding = innerPadding)
+        }
+    }
+
+    if (showNoInternetDialog) {
+        NoInternetDialog(
+            message = "To add a transaction, please turn on the internet."
         ) {
+            showNoInternetDialog = false
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TransactionDashboardContent(
+    transactionState: TransactionState,
+    onTransactionCardClick: (TransactionEntity) -> Unit,
+    events: (TransactionCreationEvents) -> Unit,
+    innerPadding: PaddingValues,
+    selectedChip: String,
+    chipOptions: List<String>,
+    chipColors: List<Color>,
+    onChipSelected: (String) -> Unit
+) {
+    val getColors = getColorsForTheme()
+    LazyColumn(
+        modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+
+    ) {
+        item {
             SearchBar(
                 text = transactionState.searchingText,
                 onExecuteSearch = {
@@ -186,17 +209,19 @@ fun TransactionDashboardScreen(
                     events(TransactionCreationEvents.SearchTransactions(it))
                 }
             )
+        }
 
-            Spacer(modifier = Modifier.height(20.dp))
-
+        item {
             Text(
                 modifier = Modifier.padding(horizontal = 12.dp),
                 text = "Recent Transactions",
-                color = GrayishPurple,
+                color = getColors.GrayishPurple,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
+        }
 
+        item {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(horizontal = 12.dp)
@@ -207,78 +232,81 @@ fun TransactionDashboardScreen(
                         color = chipColors[index],
                         selected = selectedChip == label,
                         onClick = {
-                            selectedChip = label
-                            events(TransactionCreationEvents.FilterTransactions(selectedChip))
+                            onChipSelected(label)
+                            events(TransactionCreationEvents.FilterTransactions(label))
                         }
                     )
                 }
             }
-
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                if (transactionState.isLoading) {
-                    CircularProgressIndicator()
-                }
-                else if (transactionState.modifiedFilteredTransactionList.isNotEmpty()) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        itemsIndexed(
-                            items = transactionState.modifiedFilteredTransactionList,
-                            key = { index, transaction -> transaction.id }
-                        ) { index, transaction ->
-
-                            TransactionCard(transaction) {
-                                onTransactionCardClick(transaction)
-                            }
-
-                        }
-                    }
-                }
-                else if (transactionState.error.isNotEmpty()) {
-                    Text(
-                        text = transactionState.error,
-                        fontSize = 16.sp,
-                        color = ColorPrimary,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                else {
-                    Text(
-                        text = "No transaction! \n Click on Add New button to add transactions",
-                        fontSize = 16.sp,
-                        color = ColorPrimary,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-
         }
 
-
-    }
-
-    if (showNoInternetDialog) {
-        NoInternetDialog(
-            message = "To add a transaction, please turn on the internet."
-        ) {
-            showNoInternetDialog = false
+        if (transactionState.isLoading) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxSize().padding(bottom = 200.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        } else if (transactionState.modifiedFilteredTransactionList.isNotEmpty()) {
+            itemsIndexed(
+                items = transactionState.modifiedFilteredTransactionList,
+                key = { _, transaction -> transaction.id }
+            ) { _, transaction ->
+                TransactionCard(transaction) {
+                    onTransactionCardClick(transaction)
+                }
+            }
+        } else {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxSize().padding(bottom = 150.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (transactionState.error.isNotEmpty()) {
+                        Text(
+                            text = transactionState.error,
+                            fontSize = 16.sp,
+                            color = getColors.ColorPrimary,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    } else {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 10.dp),
+                            text = "No transaction! \n Click on Add New button to add transactions",
+                            fontSize = 16.sp,
+                            color = getColors.ColorPrimary,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
         }
     }
 
 }
 
 
-
-
-
-
-
-
+@Composable
+fun SettingsScreen(innerPadding: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
+        contentAlignment = Alignment.Center
+    ) {
+        val getColors = getColorsForTheme()
+        Text(
+            text = "Settings Screen",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = getColors.DarkGrayishPurple
+        )
+    }
+}
 

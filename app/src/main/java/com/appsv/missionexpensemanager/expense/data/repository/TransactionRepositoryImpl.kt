@@ -1,7 +1,8 @@
 
-import android.util.Log
+
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionDao
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
+import com.appsv.missionexpensemanager.expense.domain.mappers.toTransactionEntity
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.domain.repository.TransactionRepository
 import com.appsv.missionexpensemanager.expense.utils.TRANSACTION
@@ -79,13 +80,4 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 }
 
-fun Transaction.toTransactionEntity(): TransactionEntity {
-    return TransactionEntity(
-        id = this.id,
-        transactionType = this.transactionType,
-        transactionNumber = this.transactionNumber,
-        description = this.description,
-        date = this.date,
-        amount = this.amount,
-    )
-}
+

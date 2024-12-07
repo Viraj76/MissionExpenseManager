@@ -7,8 +7,8 @@ import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.domain.repository.CountRepository
 import com.appsv.missionexpensemanager.expense.domain.repository.TransactionRepository
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
-import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.TransactionCountState
-import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.TransactionState
+import com.appsv.missionexpensemanager.expense.domain.models.ui_models.TransactionCountState
+import com.appsv.missionexpensemanager.expense.domain.models.ui_models.TransactionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,10 +29,6 @@ class TransactionViewModel
 
     private val _transactionCountState = MutableStateFlow(TransactionCountState())
     val transactionCountState = _transactionCountState.asStateFlow()
-
-    private val _transactionSaveStatus = MutableStateFlow(false)
-    val transactionSaveStatus: StateFlow<Boolean> = _transactionSaveStatus.asStateFlow()
-
 
     init {
         loadCounts()
@@ -66,6 +62,20 @@ class TransactionViewModel
         }
     }
 
+
+    private fun searchTransactions() {
+        val searchText = transactionState.value.searchingText.lowercase()
+        val searchedTransactionsList = transactionState.value.originalTransactionList.filter {
+            it.description.lowercase().contains(searchText) ||
+                    it.transactionType.lowercase().contains(searchText) ||
+                    it.amount.lowercase().contains(searchText) ||
+                    it.transactionNumber.toString().lowercase().contains(searchText) ||
+                    it.date.toString().lowercase().contains(searchText)
+        }
+
+        _transactionsState.value =
+            transactionState.value.copy(modifiedFilteredTransactionList = searchedTransactionsList)
+    }
     private fun filterTransactions(query: String) {
         val originalList = transactionState.value.originalTransactionList
         val filteredList = if (query == "All") {
@@ -81,6 +91,7 @@ class TransactionViewModel
         )
     }
 
+
     private fun saveTransaction(transaction: Transaction, editMode: Boolean) {
         viewModelScope.launch {
 
@@ -94,37 +105,16 @@ class TransactionViewModel
                transaction
             }
 
-            // Save the updated transaction
             transactionRepository.saveOrUpdateTransaction(updatedTransaction)
 
-            // Increment the respective count based on transaction type
             if (transaction.transactionType == "Expense") {
                 incrementExpenseCount()
             } else {
                 incrementIncomeCount()
             }
 
-            // Signal that the transaction save process is complete
-            _transactionSaveStatus.value = true
         }
     }
-
-
-
-    private fun searchTransactions() {
-        val searchText = transactionState.value.searchingText.lowercase()
-        val searchedTransactionsList = transactionState.value.originalTransactionList.filter {
-            it.description.lowercase().contains(searchText) ||
-                    it.transactionType.lowercase().contains(searchText) ||
-                    it.amount.lowercase().contains(searchText) ||
-                    it.transactionNumber.toString().lowercase().contains(searchText) ||
-                    it.date.toString().lowercase().contains(searchText)
-        }
-
-        _transactionsState.value =
-            transactionState.value.copy(modifiedFilteredTransactionList = searchedTransactionsList)
-    }
-
     private fun getTransactions() {
         viewModelScope.launch {
             transactionRepository.getTransactions().collect { transactionList ->
@@ -146,24 +136,19 @@ class TransactionViewModel
             }
         }
     }
-
     private fun deleteTransaction(id: String) {
         viewModelScope.launch {
             transactionRepository.deleteTransaction(id)
-
         }
-
     }
 
 
     private fun loadCounts() {
         viewModelScope.launch {
-            Log.d("Countss","${ countRepository.getExpenseCount()}, ${ countRepository.getIncomeCount()}")
             _transactionCountState.value = transactionCountState.value.copy(incomeCount = countRepository.getIncomeCount())
             _transactionCountState.value = transactionCountState.value.copy(expenseCount = countRepository.getExpenseCount())
         }
     }
-
     fun incrementIncomeCount() {
         viewModelScope.launch {
             countRepository.saveIncomeCount()
@@ -171,7 +156,6 @@ class TransactionViewModel
             _transactionCountState.value = transactionCountState.value.copy(incomeCount = countRepository.getIncomeCount())
         }
     }
-
     fun incrementExpenseCount() {
         viewModelScope.launch {
             countRepository.saveExpenseCount()

@@ -8,12 +8,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.appsv.missionexpensemanager.expense.presentation.TransactionViewModel
-import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.TransactionDashboardScreen
 import androidx.compose.runtime.getValue
 import androidx.navigation.toRoute
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationScreen
-import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.MainScreen
+import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.Dashboard
 import com.appsv.missionexpensemanager.expense.presentation.transaction_details.TransactionDetailsScreen
 
 @Composable
@@ -32,7 +31,7 @@ fun AppNavGraph(
             val transactionViewModel  = hiltViewModel<TransactionViewModel>()
 
             val transactionState by transactionViewModel.transactionState.collectAsStateWithLifecycle()
-            MainScreen(
+            Dashboard(
                 transactionState = transactionState,
                 onTransactionCardClick = {
                     navController.navigate(EditTransactionScreen(
@@ -53,7 +52,7 @@ fun AppNavGraph(
 
         composable<TransactionCreationScreen>{
             val transactionViewModel  = hiltViewModel<TransactionViewModel>()
-            val transactionSaveStatus by transactionViewModel.transactionSaveStatus.collectAsStateWithLifecycle()
+
             val args = it.toRoute<TransactionCreationScreen>()
             val transaction = Transaction(
                 id = args.id,

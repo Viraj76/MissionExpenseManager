@@ -1,4 +1,4 @@
-package com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard
+package com.appsv.missionexpensemanager.expense.domain.models.ui_models
 
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
 

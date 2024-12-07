@@ -79,7 +79,7 @@ fun ToggleButton(
         ) {
             RadioButton(
                 selected = isSelected,
-                onClick = null, // Already handled by the button's onClick
+                onClick = null,
                 colors = RadioButtonDefaults.colors().copy(
                     selectedColor = Color(0xFF6200EE),
                     unselectedColor = Color.Gray
