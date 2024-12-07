@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun YesNoAlertDialog(
@@ -28,7 +29,7 @@ fun YesNoAlertDialog(
                 )
             },
             text = {
-                Text(text = message)
+                Text(text = message, fontSize = 22.sp)
             },
             confirmButton = {
                 TextButton(
@@ -36,7 +37,7 @@ fun YesNoAlertDialog(
                         onYes()
                     }
                 ) {
-                    Text("Yes")
+                    Text("Yes",fontSize = 18.sp)
                 }
             },
             dismissButton = {
@@ -45,7 +46,7 @@ fun YesNoAlertDialog(
                         onNo()
                     }
                 ) {
-                    Text("No")
+                    Text("No", fontSize = 18.sp)
                 }
             }
         )

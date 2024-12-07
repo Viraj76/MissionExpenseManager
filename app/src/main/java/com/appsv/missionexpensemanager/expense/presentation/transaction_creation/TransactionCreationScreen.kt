@@ -267,7 +267,7 @@ fun TransactionCreationScreen(
                             text = "Save",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = getColors.DarkGrayishPurple
+                            color = Color(0xFFEBEFF5)
                         )
                     }
                 }

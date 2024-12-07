@@ -62,6 +62,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
+
+    // splash
+    implementation("androidx.core:core-splashscreen:1.0.1")
     // navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

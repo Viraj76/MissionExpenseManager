@@ -35,7 +35,6 @@ fun SearchBar(
 ) {
 
     val isDarkMode = isSystemInDarkTheme()
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,9 +54,8 @@ fun SearchBar(
             placeholder = { Text("Search Transactions") },
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
             colors = TextFieldDefaults.colors().copy(
-                focusedContainerColor = LightGrayishBlue,
-                focusedIndicatorColor = LightGrayishBlue,
-                unfocusedIndicatorColor = Color.Transparent
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
