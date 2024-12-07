@@ -218,36 +218,6 @@ fun TransactionDashboardScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-//                if(!isConnected){
-//                    Box(
-//                        modifier = Modifier.fillMaxSize()
-//                            .padding(bottom = 30.dp)
-//                    , contentAlignment = Alignment.Center){
-//                        Column(
-//                            horizontalAlignment = Alignment.CenterHorizontally,
-//                            verticalArrangement = Arrangement.Center,
-//                            modifier = Modifier.fillMaxWidth()
-//                        ) {
-//                            val icon: Painter = painterResource(id = R.drawable.baseline_wifi_off_24) // Replace with your actual icon
-//                            Icon(painter = icon, contentDescription = "No Internet", modifier = Modifier.size(80.dp), tint = Color.Red)
-//                            Spacer(modifier = Modifier.height(16.dp))
-//                            Text(
-//                                text = "No Internet!",
-//                                fontWeight = FontWeight.Bold,
-//                                fontSize = 20.sp,
-//                                color = Color.Red
-//                            )
-//                            Spacer(modifier = Modifier.height(8.dp))
-//                            Text(
-//                                modifier = Modifier.padding(horizontal = 15.dp),
-//                                text = "To add a transaction, please turn on the internet.",
-//                                fontSize = 18.sp,
-//                                textAlign = TextAlign.Center
-//                            )
-//                        }
-//                    }
-//
-//                }
                 if (transactionState.isLoading) {
                     CircularProgressIndicator()
                 }

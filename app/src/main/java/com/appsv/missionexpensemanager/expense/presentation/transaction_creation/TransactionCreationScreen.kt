@@ -76,10 +76,10 @@ fun TransactionCreationScreen(
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
 
     val isButtonEnabled = remember(date, description, enteredTotalAmount, selectedOption) {
-        date != initialDate ||
-                description != initialDescription ||
-                enteredTotalAmount != initialEnteredTotalAmount ||
-                (selectedOption != initialSelectedOption && initialEnteredTotalAmount != "0.00")
+        (date != initialDate && enteredTotalAmount != "0.00") ||
+                (description != initialDescription && enteredTotalAmount != "0.00") ||
+                (enteredTotalAmount != initialEnteredTotalAmount && enteredTotalAmount != "0.00") ||
+                (selectedOption != initialSelectedOption && enteredTotalAmount != "0.00")
 
     }
 
@@ -208,11 +208,8 @@ fun TransactionCreationScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Total Amount",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color.Black
+                        RequiredText(
+                            text = "Total Amount"
                         )
                         AmountTextField(
                             amount =  enteredTotalAmount,
@@ -286,26 +283,32 @@ fun saveOrUpdateTransaction(
     scope: CoroutineScope,
     events: (TransactionCreationEvents) -> Unit
 ) {
-    val transaction = if (isEditMode) {
-        Transaction(
+    if (isEditMode) {
+        val transaction =  Transaction(
             id = selectedTransaction.id ,
             transactionType = selectedOption,
+            transactionNumber = selectedTransaction.transactionNumber,
             description = description,
             date = date,
             amount = enteredTotalAmount
         )
+        scope.launch(Dispatchers.IO) {
+            events(TransactionCreationEvents.SaveOrUpdateTransaction(transaction,true))
+        }
     } else {
-        Transaction(
+
+        val transaction =  Transaction(
             id = UUID.randomUUID().toString(),
             transactionType = selectedOption,
             description = description,
             date = date,
             amount = enteredTotalAmount
         )
+        scope.launch(Dispatchers.IO) {
+            events(TransactionCreationEvents.SaveOrUpdateTransaction(transaction,false))
+        }
     }
-    scope.launch(Dispatchers.IO) {
-        events(TransactionCreationEvents.SaveOrUpdateTransaction(transaction))
-    }
+
 }
 
 

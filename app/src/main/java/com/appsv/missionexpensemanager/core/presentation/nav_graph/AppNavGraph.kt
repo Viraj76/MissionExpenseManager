@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.toRoute
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationScreen
+import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.MainScreen
 import com.appsv.missionexpensemanager.expense.presentation.transaction_details.TransactionDetailsScreen
 
 @Composable
@@ -24,14 +25,14 @@ fun AppNavGraph(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = TransactionDashboardScreen
+        startDestination = MainScreen
     ){
 
-        composable<TransactionDashboardScreen>{
+        composable<MainScreen>{
             val transactionViewModel  = hiltViewModel<TransactionViewModel>()
 
             val transactionState by transactionViewModel.transactionState.collectAsStateWithLifecycle()
-            TransactionDashboardScreen(
+            MainScreen(
                 transactionState = transactionState,
                 onTransactionCardClick = {
                     navController.navigate(EditTransactionScreen(
@@ -68,8 +69,8 @@ fun AppNavGraph(
                 selectedTransaction = transaction,
                 events = transactionViewModel::onEvent,
                 goToTransactionDashBoard = {
-                    navController.navigate(TransactionDashboardScreen){
-                        popUpTo<TransactionDashboardScreen>{
+                    navController.navigate(MainScreen){
+                        popUpTo<MainScreen>{
                             inclusive = true
                         }
                     }
@@ -102,8 +103,8 @@ fun AppNavGraph(
                     ))
                 },
                 goToTransactionDashBoard = {
-                    navController.navigate(TransactionDashboardScreen){
-                        popUpTo<TransactionDashboardScreen>{
+                    navController.navigate(MainScreen){
+                        popUpTo<MainScreen>{
                             inclusive = true
                         }
                     }

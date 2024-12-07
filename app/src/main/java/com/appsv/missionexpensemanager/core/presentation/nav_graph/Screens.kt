@@ -8,6 +8,9 @@ import kotlinx.serialization.Serializable
 data object TransactionDashboardScreen
 
 @Serializable
+data object MainScreen
+
+@Serializable
 data class TransactionCreationScreen(
     val id : String  = "",
     val transactionType: String = "Expense",

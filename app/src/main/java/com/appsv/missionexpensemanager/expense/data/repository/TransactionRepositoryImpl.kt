@@ -37,32 +37,26 @@ class TransactionRepositoryImpl @Inject constructor(
                 }
 
                 if (transactionListRemote.isNotEmpty()) {
-                    Log.d("Repository", "inside if ${transactionListRemote.toString()}")
 
                     CoroutineScope(Dispatchers.IO).launch {
                         transactionDao.saveTransactions(transactionListRemote)
-                        Log.d("TransactionRepo", "Transactions saved to Room: ${transactionListRemote.size}")
                     }
                     trySend(transactionListRemote)
                 }
                 else{
-                    Log.d("Repository", "else ${transactionListRemote.toString()}")
 
                     trySend(transactionListRemote)
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.d("ErrorDatabase", error.toString())
                 close(null)
             }
         }
 
         if (roomTransactions.isNotEmpty()) {
-            Log.d("Repository", "Inside if ${roomTransactions.toString()}")
             trySend(roomTransactions)
         }else{
-            Log.d("Repository", "after if ${roomTransactions.toString()}")
             trySend(roomTransactions)
 
         }

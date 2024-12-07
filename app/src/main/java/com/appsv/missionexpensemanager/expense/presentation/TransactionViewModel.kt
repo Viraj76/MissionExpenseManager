@@ -44,7 +44,7 @@ class TransactionViewModel
     ) {
         when (events) {
             is TransactionCreationEvents.SaveOrUpdateTransaction -> {
-                saveTransaction(events.transaction)
+                saveTransaction(events.transaction,events.isEditMode)
             }
 
             is TransactionCreationEvents.DeleteTransaction -> {
@@ -81,13 +81,17 @@ class TransactionViewModel
         )
     }
 
-    private fun saveTransaction(transaction: Transaction) {
+    private fun saveTransaction(transaction: Transaction, editMode: Boolean) {
         viewModelScope.launch {
-            // Update the transactionNumber based on transaction type
-            val updatedTransaction = if (transaction.transactionType == "Expense") {
-                transaction.copy(transactionNumber = transactionCountState.value.expenseCount + 1)
-            } else {
-                transaction.copy(transactionNumber = transactionCountState.value.incomeCount + 1)
+
+            val updatedTransaction =  if(!editMode){
+              if (transaction.transactionType == "Expense") {
+                   transaction.copy(transactionNumber = transactionCountState.value.expenseCount + 1)
+               } else {
+                   transaction.copy(transactionNumber = transactionCountState.value.incomeCount + 1)
+               }
+           } else {
+               transaction
             }
 
             // Save the updated transaction
@@ -124,7 +128,6 @@ class TransactionViewModel
     private fun getTransactions() {
         viewModelScope.launch {
             transactionRepository.getTransactions().collect { transactionList ->
-                Log.d("Repository", "VM ${transactionList.toString()}")
                 if (transactionList != null) {
                     _transactionsState.value = transactionState.value.copy(
                         isLoading = false,
