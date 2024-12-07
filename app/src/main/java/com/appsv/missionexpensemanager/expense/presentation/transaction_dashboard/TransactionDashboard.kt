@@ -1,6 +1,7 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard
 
 
+import android.R.id.message
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -153,7 +155,7 @@ fun TransactionDashboardScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 10.dp, top = 0.dp, start = 100.dp, end = 100.dp),
+                    .padding(bottom = 0.dp, top = 0.dp, start = 100.dp, end = 100.dp),
                 containerColor = ColorPrimary,
                 shape = CircleShape
             ) {
@@ -216,9 +218,40 @@ fun TransactionDashboardScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
+//                if(!isConnected){
+//                    Box(
+//                        modifier = Modifier.fillMaxSize()
+//                            .padding(bottom = 30.dp)
+//                    , contentAlignment = Alignment.Center){
+//                        Column(
+//                            horizontalAlignment = Alignment.CenterHorizontally,
+//                            verticalArrangement = Arrangement.Center,
+//                            modifier = Modifier.fillMaxWidth()
+//                        ) {
+//                            val icon: Painter = painterResource(id = R.drawable.baseline_wifi_off_24) // Replace with your actual icon
+//                            Icon(painter = icon, contentDescription = "No Internet", modifier = Modifier.size(80.dp), tint = Color.Red)
+//                            Spacer(modifier = Modifier.height(16.dp))
+//                            Text(
+//                                text = "No Internet!",
+//                                fontWeight = FontWeight.Bold,
+//                                fontSize = 20.sp,
+//                                color = Color.Red
+//                            )
+//                            Spacer(modifier = Modifier.height(8.dp))
+//                            Text(
+//                                modifier = Modifier.padding(horizontal = 15.dp),
+//                                text = "To add a transaction, please turn on the internet.",
+//                                fontSize = 18.sp,
+//                                textAlign = TextAlign.Center
+//                            )
+//                        }
+//                    }
+//
+//                }
                 if (transactionState.isLoading) {
                     CircularProgressIndicator()
-                } else if (transactionState.modifiedFilteredTransactionList.isNotEmpty()) {
+                }
+                else if (transactionState.modifiedFilteredTransactionList.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(12.dp),
@@ -235,7 +268,8 @@ fun TransactionDashboardScreen(
 
                         }
                     }
-                } else if (transactionState.error.isNotEmpty()) {
+                }
+                else if (transactionState.error.isNotEmpty()) {
                     Text(
                         text = transactionState.error,
                         fontSize = 16.sp,
@@ -243,7 +277,8 @@ fun TransactionDashboardScreen(
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
-                } else {
+                }
+                else {
                     Text(
                         text = "No transaction! \n Click on Add New button to add transactions",
                         fontSize = 16.sp,

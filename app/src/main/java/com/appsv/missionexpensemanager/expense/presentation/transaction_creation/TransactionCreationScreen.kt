@@ -45,9 +45,10 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionCreationScreen(
-    selectedTransaction : Transaction = Transaction(),
+    transactionSaveStatus: Boolean,
+    selectedTransaction: Transaction = Transaction(),
     events: (TransactionCreationEvents) -> Unit,
-    goToTransactionDashBoard : () -> Unit
+    goToTransactionDashBoard: () -> Unit,
 ) {
 
     BackHandler {
@@ -78,10 +79,9 @@ fun TransactionCreationScreen(
         date != initialDate ||
                 description != initialDescription ||
                 enteredTotalAmount != initialEnteredTotalAmount ||
-                selectedOption != initialSelectedOption
+                (selectedOption != initialSelectedOption && initialEnteredTotalAmount != "0.00")
+
     }
-
-
 
     Scaffold(
         topBar = {

@@ -82,4 +82,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
          // firebase products
     implementation("com.google.firebase:firebase-database")
+
+    // data store
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
 }

@@ -1,4 +1,3 @@
-package com.appsv.missionexpensemanager.expense.data.repository
 
 import android.util.Log
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionDao
@@ -21,15 +20,13 @@ import javax.inject.Inject
 class TransactionRepositoryImpl @Inject constructor(
     private val firebaseDatabase: FirebaseDatabase,
     private val transactionDao: TransactionDao
-): TransactionRepository {
+) : TransactionRepository {
 
     private val transactionRef = firebaseDatabase.getReference(TRANSACTION)
 
     override suspend fun getTransactions(): Flow<List<TransactionEntity>?> = callbackFlow {
+
         val roomTransactions = transactionDao.fetchAllTransactions()
-        if (roomTransactions.isNotEmpty()) {
-            trySend(roomTransactions)
-        }
 
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -39,17 +36,35 @@ class TransactionRepositoryImpl @Inject constructor(
                     it.toTransactionEntity()
                 }
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    transactionDao.saveTransactions(transactionListRemote)
-                    Log.d("TransactionRepo", "Transactions saved to Room: ${transactionListRemote.size}")
-                }
+                if (transactionListRemote.isNotEmpty()) {
+                    Log.d("Repository", "inside if ${transactionListRemote.toString()}")
 
-                trySend(transactionListRemote)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        transactionDao.saveTransactions(transactionListRemote)
+                        Log.d("TransactionRepo", "Transactions saved to Room: ${transactionListRemote.size}")
+                    }
+                    trySend(transactionListRemote)
+                }
+                else{
+                    Log.d("Repository", "else ${transactionListRemote.toString()}")
+
+                    trySend(transactionListRemote)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.d("ErrorDatabase", error.toString())
                 close(null)
             }
+        }
+
+        if (roomTransactions.isNotEmpty()) {
+            Log.d("Repository", "Inside if ${roomTransactions.toString()}")
+            trySend(roomTransactions)
+        }else{
+            Log.d("Repository", "after if ${roomTransactions.toString()}")
+            trySend(roomTransactions)
+
         }
 
         transactionRef.addValueEventListener(listener)
@@ -65,6 +80,8 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun deleteTransaction(id: String) {
         transactionRef.child(id).removeValue()
+        transactionDao.deleteTransaction(id)
+
     }
 }
 

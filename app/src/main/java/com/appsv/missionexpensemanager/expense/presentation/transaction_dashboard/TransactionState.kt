@@ -7,5 +7,10 @@ data class TransactionState(
     val originalTransactionList : List<TransactionEntity> = emptyList(),
     val modifiedFilteredTransactionList : List<TransactionEntity> = emptyList(),
     val error : String = "",
-    val searchingText : String = ""
+    val searchingText : String = "",
+)
+
+data class TransactionCountState(
+    val incomeCount: Int = 0,
+    val expenseCount: Int = 0,
 )

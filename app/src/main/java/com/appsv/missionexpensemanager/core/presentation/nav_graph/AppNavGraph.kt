@@ -1,9 +1,6 @@
 package com.appsv.missionexpensemanager.core.presentation.nav_graph
 
-import android.util.Log
-import android.view.SurfaceControl
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,8 +52,8 @@ fun AppNavGraph(
 
         composable<TransactionCreationScreen>{
             val transactionViewModel  = hiltViewModel<TransactionViewModel>()
+            val transactionSaveStatus by transactionViewModel.transactionSaveStatus.collectAsStateWithLifecycle()
             val args = it.toRoute<TransactionCreationScreen>()
-
             val transaction = Transaction(
                 id = args.id,
                 transactionType = args.transactionType,
@@ -66,11 +63,8 @@ fun AppNavGraph(
                 amount = args.amount
             )
 
-            LaunchedEffect(Unit) {
-                Log.d("Details", transaction.toString())
-            }
-
             TransactionCreationScreen(
+                transactionSaveStatus,
                 selectedTransaction = transaction,
                 events = transactionViewModel::onEvent,
                 goToTransactionDashBoard = {
@@ -79,8 +73,7 @@ fun AppNavGraph(
                             inclusive = true
                         }
                     }
-                }
-            )
+                })
         }
 
         composable<EditTransactionScreen>{
