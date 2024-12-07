@@ -48,7 +48,7 @@ fun SearchBar(
                 .padding(horizontal = 18.dp, vertical = 12.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp)),
-            placeholder = { Text("Search") },
+            placeholder = { Text("Search Transactions") },
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
             colors = TextFieldDefaults.colors().copy(
                 focusedContainerColor = LightGrayishBlue,

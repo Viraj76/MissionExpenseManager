@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
+import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appsv.missionexpensemanager.R
@@ -44,7 +46,10 @@ import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboar
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavItem
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.SearchBar
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.TransactionCard
+import java.nio.file.WatchEvent
 
+
+@Preview
 @Composable
 fun MainScreen(
     transactionState: TransactionState = TransactionState(),
@@ -125,7 +130,7 @@ fun MainScreen(
             }
         },
         floatingActionButton = {
-            if (selectedIndex == 0) { // Show FAB only for Dashboard
+            if (selectedIndex == 0) {
                 ExtendedFloatingActionButton(
                     onClick = {
                         if (isConnected) onFabClick() else showNoInternetDialog = true
@@ -188,87 +193,105 @@ fun TransactionDashboardContent(
     chipColors: List<Color>,
     onChipSelected: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(innerPadding)
+    LazyColumn(
+        modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        SearchBar(
-            text = transactionState.searchingText,
-            onExecuteSearch = {
-                events(TransactionCreationEvents.StartSearchingTransactions)
-            },
-            onSearchingTransactions = {
-                events(TransactionCreationEvents.SearchTransactions(it))
-            }
-        )
+        item {
+            SearchBar(
+                text = transactionState.searchingText,
+                onExecuteSearch = {
+                    events(TransactionCreationEvents.StartSearchingTransactions)
+                },
+                onSearchingTransactions = {
+                    events(TransactionCreationEvents.SearchTransactions(it))
+                }
+            )
+        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            Text(
+                modifier = Modifier.padding(horizontal = 12.dp),
+                text = "Recent Transactions",
+                color = GrayishPurple,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
-        Text(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            text = "Recent Transactions",
-            color = GrayishPurple,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(horizontal = 12.dp)
-        ) {
-            chipOptions.forEachIndexed { index, label ->
-                CustomFilterChip(
-                    label = label,
-                    color = chipColors[index],
-                    selected = selectedChip == label,
-                    onClick = {
-                        onChipSelected(label)
-                        events(TransactionCreationEvents.FilterTransactions(label))
-                    }
-                )
+        item {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(horizontal = 12.dp)
+            ) {
+                chipOptions.forEachIndexed { index, label ->
+                    CustomFilterChip(
+                        label = label,
+                        color = chipColors[index],
+                        selected = selectedChip == label,
+                        onClick = {
+                            onChipSelected(label)
+                            events(TransactionCreationEvents.FilterTransactions(label))
+                        }
+                    )
+                }
             }
         }
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            if (transactionState.isLoading) {
-                CircularProgressIndicator()
-            } else if (transactionState.modifiedFilteredTransactionList.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+        if (transactionState.isLoading) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxSize().padding(bottom = 200.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    itemsIndexed(
-                        items = transactionState.modifiedFilteredTransactionList,
-                        key = { _, transaction -> transaction.id }
-                    ) { _, transaction ->
-                        TransactionCard(transaction) {
-                            onTransactionCardClick(transaction)
-                        }
+                    CircularProgressIndicator()
+                }
+            }
+        } else if (transactionState.modifiedFilteredTransactionList.isNotEmpty()) {
+            // Show transactions
+            itemsIndexed(
+                items = transactionState.modifiedFilteredTransactionList,
+                key = { _, transaction -> transaction.id }
+            ) { _, transaction ->
+                TransactionCard(transaction) {
+                    onTransactionCardClick(transaction)
+                }
+            }
+        } else {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxSize().padding(bottom = 150.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (transactionState.error.isNotEmpty()) {
+                        Text(
+                            text = transactionState.error,
+                            fontSize = 16.sp,
+                            color = ColorPrimary,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    } else {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 10.dp),
+                            text = "No transaction! \n Click on Add New button to add transactions",
+                            fontSize = 16.sp,
+                            color = ColorPrimary,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
-            } else if (transactionState.error.isNotEmpty()) {
-                Text(
-                    text = transactionState.error,
-                    fontSize = 16.sp,
-                    color = ColorPrimary,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                Text(
-                    text = "No transaction! \n Click on Add New button to add transactions",
-                    fontSize = 16.sp,
-                    color = ColorPrimary,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
             }
         }
     }
+
 }
+
 
 @Composable
 fun SettingsScreen(innerPadding: PaddingValues) {

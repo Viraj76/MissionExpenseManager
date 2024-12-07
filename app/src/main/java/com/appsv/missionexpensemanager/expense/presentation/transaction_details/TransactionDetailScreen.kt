@@ -3,6 +3,8 @@ package com.appsv.missionexpensemanager.expense.presentation.transaction_details
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -36,6 +38,7 @@ import com.appsv.missionexpensemanager.expense.presentation.transaction_creation
 import kotlinx.coroutines.launch
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionDetailsScreen(
@@ -58,6 +61,10 @@ fun TransactionDetailsScreen(
     BackHandler {
         goToTransactionDashBoard()
     }
+
+    // Scroll state for the entire screen
+    val scrollState = rememberScrollState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -97,11 +104,13 @@ fun TransactionDetailsScreen(
         }
     ) { padding ->
 
+        // Wrap everything inside a Column and make it scrollable
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .background(color = Color(0xFFF8F8FF))
+                .verticalScroll(scrollState)  // Make the entire screen scrollable
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -130,7 +139,6 @@ fun TransactionDetailsScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
 
             DetailRow(label = "Description", value = selectedTransaction.description)
 
@@ -217,7 +225,7 @@ fun DetailRow(label: String, value: String, isBold: Boolean = false) {
                 style = MaterialTheme.typography.bodyMedium,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
-                )
+            )
             Spacer(modifier = Modifier.height(8.dp))
 
             HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color.LightGray.copy(alpha = 0.5f))
@@ -232,3 +240,6 @@ fun DetailRow(label: String, value: String, isBold: Boolean = false) {
     }
 
 }
+
+
+

@@ -65,7 +65,6 @@ fun AppNavGraph(
             )
 
             TransactionCreationScreen(
-                transactionSaveStatus,
                 selectedTransaction = transaction,
                 events = transactionViewModel::onEvent,
                 goToTransactionDashBoard = {

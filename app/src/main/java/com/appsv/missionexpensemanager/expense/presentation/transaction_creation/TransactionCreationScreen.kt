@@ -7,7 +7,9 @@ import androidx.activity.compose.BackHandler
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -45,12 +47,10 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionCreationScreen(
-    transactionSaveStatus: Boolean,
     selectedTransaction: Transaction = Transaction(),
     events: (TransactionCreationEvents) -> Unit,
     goToTransactionDashBoard: () -> Unit,
 ) {
-
     BackHandler {
         goToTransactionDashBoard()
     }
@@ -58,12 +58,8 @@ fun TransactionCreationScreen(
 
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        Log.d("Amount", selectedTransaction.amount)
-    }
     var showCalendarDialog by remember { mutableStateOf(false) }
     var isEnteringAmount by remember { mutableStateOf(false) }
-
 
     val initialDate = if(isEditMode) selectedTransaction.date else formatDate(System.currentTimeMillis())
     val initialDescription = if(isEditMode) selectedTransaction.description else ""
@@ -80,7 +76,6 @@ fun TransactionCreationScreen(
                 (description != initialDescription && enteredTotalAmount != "0.00") ||
                 (enteredTotalAmount != initialEnteredTotalAmount && enteredTotalAmount != "0.00") ||
                 (selectedOption != initialSelectedOption && enteredTotalAmount != "0.00")
-
     }
 
     Scaffold(
@@ -109,10 +104,12 @@ fun TransactionCreationScreen(
         },
         containerColor = ColorSecondaryVariant,
         content = { paddingValues ->
+            // Wrap the content in a Scrollable Column to handle both portrait and landscape modes
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .verticalScroll(rememberScrollState()) // Enable scrolling
             ) {
                 ExpenseIncomeToggle(selectedOption) {
                     selectedOption = it
@@ -123,9 +120,8 @@ fun TransactionCreationScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White),
-
-                    ) {
+                        .background(Color.White)
+                ) {
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
@@ -165,12 +161,12 @@ fun TransactionCreationScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White),
-
-                    ) {
+                        .background(Color.White)
+                ) {
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
@@ -200,7 +196,6 @@ fun TransactionCreationScreen(
                         .fillMaxWidth()
                         .background(Color.White),
                 ) {
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -225,8 +220,6 @@ fun TransactionCreationScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-
-
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -268,11 +261,11 @@ fun TransactionCreationScreen(
                         )
                     }
                 }
-
             }
         }
     )
 }
+
 fun saveOrUpdateTransaction(
     isEditMode: Boolean,
     selectedTransaction: Transaction,
