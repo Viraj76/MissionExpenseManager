@@ -1,7 +1,9 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_details
 
+import android.R.attr.label
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +34,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.appsv.missionexpensemanager.core.component.NoInternetDialog
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPurple
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.core.util.NetworkConnectionState
 import com.appsv.missionexpensemanager.core.util.rememberConnectivityState
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
@@ -56,19 +60,23 @@ fun TransactionDetailsScreen(
             connectionState === NetworkConnectionState.Available
         }
     }
+
+    val getColors = getColorsForTheme()
+    val isDarkMode = isSystemInDarkTheme()
+
     var isYesNoDialogOpen by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     BackHandler {
         goToTransactionDashBoard()
     }
 
-    // Scroll state for the entire screen
     val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Expense", color = Color.Black, fontWeight = FontWeight.Medium) },
+                modifier = Modifier.background(if(!isDarkMode) Color.White else Color(0xFF303030)),
+                title = { Text(text = "Expense", color = getColors.DarkGrayishPurple, fontWeight = FontWeight.Medium) },
                 navigationIcon = {
                     IconButton(onClick = {
                         goToTransactionDashBoard()
@@ -101,23 +109,22 @@ fun TransactionDetailsScreen(
                     }
                 },
             )
-        }
+        },
+        containerColor = getColors.ColorSecondaryVariant
     ) { padding ->
 
-        // Wrap everything inside a Column and make it scrollable
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(color = Color(0xFFF8F8FF))
-                .verticalScroll(scrollState)  // Make the entire screen scrollable
+                .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White),
+                    .background(if(!isDarkMode) Color.White else DarkGrayishPurple),
 
                 ) {
                 Column(
@@ -125,13 +132,13 @@ fun TransactionDetailsScreen(
                 ) {
                     Text(
                         text = "${selectedTransaction.transactionType} #${selectedTransaction.transactionNumber}",
-                        color = Color(0xFF6200EA),
+                        color = getColors.DarkGrayishPurple,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                     Text(
                         text = selectedTransaction.date,
-                        color = Color.DarkGray,
+                        color = getColors.DarkGrayishPurple,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -140,14 +147,41 @@ fun TransactionDetailsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            DetailRow(label = "Description", value = selectedTransaction.description)
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(if(!isDarkMode) Color.White else DarkGrayishPurple),
+
+                ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = "Description",
+                        color = getColors.DarkGrayishPurple,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color.LightGray.copy(alpha = 0.5f))
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = if(selectedTransaction.description.isEmpty()) "NA" else selectedTransaction.description,
+                        color = getColors.DarkGrayishPurple,
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(if(!isDarkMode) Color.White else DarkGrayishPurple)
                     .padding(vertical = 15.dp),
             ) {
 
@@ -162,13 +196,13 @@ fun TransactionDetailsScreen(
                         text = "Total Amount",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color.Black
+                        color = getColors.DarkGrayishPurple
                     )
                     Text(
                         text = "₹ ${selectedTransaction.amount}",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color.Black
+                        color = getColors.DarkGrayishPurple
                     )
 
                 }
@@ -209,35 +243,12 @@ fun TransactionDetailsScreen(
 }
 
 @Composable
-fun DetailRow(label: String, value: String, isBold: Boolean = false) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White),
+fun DetailRow(
+    label: String,
+    value: String,
+    isBold: Boolean = false,
+    isDarkMode : Boolean, ) {
 
-        ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Text(
-                text = label,
-                color = Color.Black,
-                style = MaterialTheme.typography.bodyMedium,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color.LightGray.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = if(value.isEmpty()) "NA" else value,
-                color = Color.Black,
-                style = if (isBold) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
 
 }
 

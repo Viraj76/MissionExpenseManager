@@ -1,6 +1,7 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,8 +25,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondaryVariant
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPurple
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 
@@ -39,10 +42,13 @@ fun TransactionCard(
             transactionNumber = 1,
             description = "",
             date = "2024-12-06",
-            amount = "45.50"
+            amount = "45.505656"
         ),
     onTransactionCardClick : () -> Unit = {}
 ) {
+    val isDarkMode = isSystemInDarkTheme()
+    val getColors = getColorsForTheme()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,7 +59,7 @@ fun TransactionCard(
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(4.dp),
         colors = CardDefaults.cardColors().copy(
-            containerColor = Color.White
+            containerColor = if(!isDarkMode) Color.White else DarkGrayishPurple
         )
     ) {
 
@@ -68,7 +74,7 @@ fun TransactionCard(
                     Text(
                         text = transaction.description,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = DarkGrayishPurple,
+                        color = getColors.DarkGrayishPurple,
                         fontSize = 20.sp,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
@@ -82,7 +88,7 @@ fun TransactionCard(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     fontSize = if(transaction.description.isNotEmpty()) 13.sp else 20.sp,
-                    color = if(transaction.description.isNotEmpty()) GrayishPurple else DarkGrayishPurple
+                    color = if(transaction.description.isNotEmpty()) getColors.GrayishPurple else getColors.DarkGrayishPurple
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
@@ -95,11 +101,10 @@ fun TransactionCard(
             }
             Spacer(modifier = Modifier.width(20.dp))
             Text(
-                modifier = Modifier.weight(0.2f),
                 text ="₹ ${transaction.amount}",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = DarkGrayishPurple,
+                color = getColors.DarkGrayishPurple,
                 fontSize = 20.sp
             )
         }

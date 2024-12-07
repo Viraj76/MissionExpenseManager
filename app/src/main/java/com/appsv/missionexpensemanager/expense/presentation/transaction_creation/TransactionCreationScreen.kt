@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import com.appsv.missionexpensemanager.R
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorPrimary
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondaryVariant
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPurple
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.CustomTextField
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.DatePickerModal
@@ -58,7 +62,10 @@ fun TransactionCreationScreen(
 
     val scope = rememberCoroutineScope()
 
-    var showCalendarDialog by remember { mutableStateOf(false) }
+    val getColors = getColorsForTheme()
+    val isDarkMode = isSystemInDarkTheme()
+
+    var showCalendarDialog by rememberSaveable { mutableStateOf(false) }
     var isEnteringAmount by remember { mutableStateOf(false) }
 
     val initialDate = if(isEditMode) selectedTransaction.date else formatDate(System.currentTimeMillis())
@@ -79,13 +86,15 @@ fun TransactionCreationScreen(
     }
 
     Scaffold(
+        modifier = Modifier.background(if(!isDarkMode) Color.White else Color(0xFF303030)),
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = "Record Expense",
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = getColors.DarkGrayishPurple
                     )
                 },
                 navigationIcon = {
@@ -96,15 +105,15 @@ fun TransactionCreationScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Back Icon"
+                            contentDescription = "Back Icon",
+                            tint = getColors.DarkGrayishPurple
                         )
                     }
                 }
             )
         },
-        containerColor = ColorSecondaryVariant,
+        containerColor = getColors.ColorSecondaryVariant,
         content = { paddingValues ->
-            // Wrap the content in a Scrollable Column to handle both portrait and landscape modes
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -120,7 +129,7 @@ fun TransactionCreationScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
+                        .background(if(!isDarkMode) Color.White else DarkGrayishPurple),
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp)
@@ -165,7 +174,7 @@ fun TransactionCreationScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
+                        .background(if(!isDarkMode) Color.White else DarkGrayishPurple),
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp)
@@ -174,7 +183,7 @@ fun TransactionCreationScreen(
                             text = "DESCRIPTION",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF333366),
+                            color = getColors.DarkGrayishPurple,
                             textAlign = TextAlign.Start
                         )
                         Spacer(modifier = Modifier.height(10.dp))
@@ -194,7 +203,7 @@ fun TransactionCreationScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White),
+                        .background(if(!isDarkMode) Color.White else DarkGrayishPurple),
                 ) {
                     Row(
                         modifier = Modifier
@@ -226,7 +235,7 @@ fun TransactionCreationScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White),
+                        .background(if(!isDarkMode) Color.White else DarkGrayishPurple),
                 ) {
                     Button(
                         onClick = {
@@ -257,7 +266,8 @@ fun TransactionCreationScreen(
                             modifier = Modifier.padding(vertical = 8.dp),
                             text = "Save",
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = getColors.DarkGrayishPurple
                         )
                     }
                 }

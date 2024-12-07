@@ -2,6 +2,7 @@ package com.appsv.missionexpensemanager.expense.presentation.transaction_creatio
 
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPurple
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
 
 
@@ -56,7 +58,8 @@ fun ToggleButton(
     text: String,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (isSelected) Color(0xFFF5F3FF) else Color.White
+    val isDarkMode = isSystemInDarkTheme()
+    val backgroundColor = if(!isDarkMode) Color.White else DarkGrayishPurple
     val borderColor = if (isSelected) Color(0xFF6200EE) else Color(0xFFB0B0B0)
     val textColor = GrayishPurple
 

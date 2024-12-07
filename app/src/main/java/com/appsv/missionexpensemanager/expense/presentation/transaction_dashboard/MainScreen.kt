@@ -1,5 +1,6 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,8 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondary
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorSecondaryVariant
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishBlue
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.GrayishPurple
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.LighterDarkColor
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.core.util.NetworkConnectionState
 import com.appsv.missionexpensemanager.core.util.rememberConnectivityState
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
@@ -60,6 +63,9 @@ fun MainScreen(
     var showNoInternetDialog by rememberSaveable { mutableStateOf(false) }
     val connectionState by rememberConnectivityState()
 
+    val getColors = getColorsForTheme()
+    val isDarkTheme = isSystemInDarkTheme()
+
     val isConnected by remember(connectionState) {
         derivedStateOf {
             connectionState === NetworkConnectionState.Available
@@ -79,16 +85,16 @@ fun MainScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = ColorSecondaryVariant,
+        containerColor = getColors.ColorSecondaryVariant,
         bottomBar = {
             NavigationBar(
-                containerColor = Color.White
+                containerColor = if(!isDarkTheme) Color.White else LighterDarkColor
             ) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 navItemList.forEachIndexed { index, navItem ->
                     val iconAndTextColor =
-                        if (selectedIndex == index) ColorSecondary else GrayishBlue
+                        if (selectedIndex == index) getColors.ColorSecondary else getColors.GrayishBlue
 
                     NavigationBarItem(
                         colors = NavigationBarItemDefaults.colors().copy(
@@ -138,7 +144,7 @@ fun MainScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 0.dp, top = 0.dp, start = 100.dp, end = 100.dp),
-                    containerColor = ColorPrimary,
+                    containerColor = getColors.ColorPrimary,
                     shape = CircleShape
                 ) {
                     Icon(
@@ -193,11 +199,13 @@ fun TransactionDashboardContent(
     chipColors: List<Color>,
     onChipSelected: (String) -> Unit
 ) {
+    val getColors = getColorsForTheme()
     LazyColumn(
         modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(6.dp),
+
     ) {
         item {
             SearchBar(
@@ -215,7 +223,7 @@ fun TransactionDashboardContent(
             Text(
                 modifier = Modifier.padding(horizontal = 12.dp),
                 text = "Recent Transactions",
-                color = GrayishPurple,
+                color = getColors.GrayishPurple,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -271,7 +279,7 @@ fun TransactionDashboardContent(
                         Text(
                             text = transactionState.error,
                             fontSize = 16.sp,
-                            color = ColorPrimary,
+                            color = getColors.ColorPrimary,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
@@ -280,7 +288,7 @@ fun TransactionDashboardContent(
                             modifier = Modifier.padding(horizontal = 10.dp),
                             text = "No transaction! \n Click on Add New button to add transactions",
                             fontSize = 16.sp,
-                            color = ColorPrimary,
+                            color = getColors.ColorPrimary,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
@@ -301,7 +309,13 @@ fun SettingsScreen(innerPadding: PaddingValues) {
             .padding(innerPadding),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "Settings Screen", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        val getColors = getColorsForTheme()
+        Text(
+            text = "Settings Screen",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = getColors.DarkGrayishPurple
+        )
     }
 }
 

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.graphics.Color
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.UnderlinedText
 
 @Composable
@@ -69,11 +70,12 @@ fun AmountTextField(
             )
         )
     } else {
+        val getColor = getColorsForTheme()
         UnderlinedText(
             text = if (amount.isNotEmpty()) amount else "0.00",
-            color = Color.Black,
+            color = getColor.DarkGrayishPurple,
             backgroundColor = Color.Transparent,
-            onAmountClick = onAmountClick
+            onAmountClick = onAmountClick,
         )
     }
 }

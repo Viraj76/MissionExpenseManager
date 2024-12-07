@@ -12,19 +12,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 
 
 @Composable
 fun RequiredText(
     text : String
 ) {
+    val getColors = getColorsForTheme()
     Row {
         Text(
             text = text,
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF333366),
+            color = getColors.DarkGrayishPurple,
             textAlign = TextAlign.Start
         )
         Spacer(modifier = Modifier.width(2.dp))
