@@ -1,20 +1,21 @@
 package com.appsv.missionexpensemanager.expense.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
 import com.appsv.missionexpensemanager.expense.domain.repository.CountRepository
 import com.appsv.missionexpensemanager.expense.domain.repository.TransactionRepository
-import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
-import com.appsv.missionexpensemanager.expense.domain.models.ui_models.TransactionCountState
-import com.appsv.missionexpensemanager.expense.domain.models.ui_models.TransactionState
+import com.appsv.missionexpensemanager.expense.presentation.ui_models.TransactionCountState
+import com.appsv.missionexpensemanager.expense.presentation.ui_models.TransactionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+/**
+ * ViewModel for transaction
+ */
 
 @HiltViewModel
 class TransactionViewModel
@@ -36,27 +37,27 @@ class TransactionViewModel
     }
 
     fun onEvent(
-        events: TransactionCreationEvents,
+        events: TransactionEvents,
     ) {
         when (events) {
-            is TransactionCreationEvents.SaveOrUpdateTransaction -> {
+            is TransactionEvents.SaveOrUpdateTransaction -> {
                 saveTransaction(events.transaction,events.isEditMode)
             }
 
-            is TransactionCreationEvents.DeleteTransaction -> {
+            is TransactionEvents.DeleteTransaction -> {
                 deleteTransaction(events.id)
             }
 
-            is TransactionCreationEvents.SearchTransactions -> {
+            is TransactionEvents.SearchTransactions -> {
                 _transactionsState.value =
                     transactionState.value.copy(searchingText = events.searchingText)
             }
 
-            is TransactionCreationEvents.StartSearchingTransactions -> {
+            is TransactionEvents.StartSearchingTransactions -> {
                 searchTransactions()
             }
 
-            is TransactionCreationEvents.FilterTransactions -> {
+            is TransactionEvents.FilterTransactions -> {
                 filterTransactions(events.label)
             }
         }

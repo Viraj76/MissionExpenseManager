@@ -9,6 +9,10 @@ import com.appsv.missionexpensemanager.expense.domain.repository.CountRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+
+/**
+ * Monitors the number of transactions saved by the user, categorized by income and expenses.
+ */
 private val Context.dataStore by preferencesDataStore("transaction_counts")
 
 class CountRepositoryImpl(private val context: Context) : CountRepository {

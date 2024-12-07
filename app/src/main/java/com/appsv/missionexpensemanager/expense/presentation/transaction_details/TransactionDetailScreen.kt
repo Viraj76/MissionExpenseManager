@@ -1,6 +1,5 @@
 package com.appsv.missionexpensemanager.expense.presentation.transaction_details
 
-import android.R.attr.label
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -38,7 +37,7 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPur
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.core.util.NetworkConnectionState
 import com.appsv.missionexpensemanager.core.util.rememberConnectivityState
-import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
+import com.appsv.missionexpensemanager.expense.presentation.TransactionEvents
 import kotlinx.coroutines.launch
 
 
@@ -48,7 +47,7 @@ import kotlinx.coroutines.launch
 fun TransactionDetailsScreen(
     selectedTransaction : Transaction = Transaction(),
     onEditIconClicked : (Transaction) -> Unit = {},
-    events: (TransactionCreationEvents) -> Unit,
+    events: (TransactionEvents) -> Unit,
     goToTransactionDashBoard : () -> Unit = {}
 ) {
     var showNoInternetDialogForEdit by rememberSaveable { mutableStateOf(false) }
@@ -217,7 +216,7 @@ fun TransactionDetailsScreen(
                 isYesNoDialogOpen = false
                 goToTransactionDashBoard()
                 scope.launch{
-                    events(TransactionCreationEvents.DeleteTransaction(selectedTransaction.id))
+                    events(TransactionEvents.DeleteTransaction(selectedTransaction.id))
                 }
             },
             onNo = {

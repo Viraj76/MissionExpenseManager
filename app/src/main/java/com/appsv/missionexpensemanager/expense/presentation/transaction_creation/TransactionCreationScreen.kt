@@ -35,6 +35,7 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.ColorPrimary
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.DarkGrayishPurple
 import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTheme
 import com.appsv.missionexpensemanager.expense.domain.models.Transaction
+import com.appsv.missionexpensemanager.expense.presentation.TransactionEvents
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.CustomTextField
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.DatePickerModal
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.ExpenseIncomeToggle
@@ -50,7 +51,7 @@ import java.util.UUID
 @Composable
 fun TransactionCreationScreen(
     selectedTransaction: Transaction = Transaction(),
-    events: (TransactionCreationEvents) -> Unit,
+    events: (TransactionEvents) -> Unit,
     goToTransactionDashBoard: () -> Unit,
 ) {
 
@@ -284,7 +285,7 @@ fun saveOrUpdateTransaction(
     date: String,
     enteredTotalAmount: String,
     scope: CoroutineScope,
-    events: (TransactionCreationEvents) -> Unit
+    events: (TransactionEvents) -> Unit
 ) {
     if (isEditMode) {
         val transaction =  Transaction(
@@ -296,7 +297,7 @@ fun saveOrUpdateTransaction(
             amount = enteredTotalAmount
         )
         scope.launch(Dispatchers.IO) {
-            events(TransactionCreationEvents.SaveOrUpdateTransaction(transaction,true))
+            events(TransactionEvents.SaveOrUpdateTransaction(transaction,true))
         }
     } else {
 
@@ -308,7 +309,7 @@ fun saveOrUpdateTransaction(
             amount = enteredTotalAmount
         )
         scope.launch(Dispatchers.IO) {
-            events(TransactionCreationEvents.SaveOrUpdateTransaction(transaction,false))
+            events(TransactionEvents.SaveOrUpdateTransaction(transaction,false))
         }
     }
 

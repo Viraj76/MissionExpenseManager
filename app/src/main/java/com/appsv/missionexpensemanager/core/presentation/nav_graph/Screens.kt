@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object MainScreen
+data object Dashboard
 
 @Serializable
 data class TransactionCreationScreen(

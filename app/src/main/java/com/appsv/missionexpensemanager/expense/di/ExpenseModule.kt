@@ -3,8 +3,8 @@ package com.appsv.missionexpensemanager.expense.di
 import TransactionRepositoryImpl
 import android.content.Context
 import androidx.room.Room
+import com.appsv.missionexpensemanager.core.data.local.room.TransactionRoomDB
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionDao
-import com.appsv.missionexpensemanager.expense.data.local.room.TransactionRoomDB
 import com.appsv.missionexpensemanager.expense.data.repository.CountRepositoryImpl
 import com.appsv.missionexpensemanager.expense.domain.repository.CountRepository
 import com.appsv.missionexpensemanager.expense.domain.repository.TransactionRepository
@@ -15,7 +15,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
 
 @InstallIn(SingletonComponent::class)
 @Module

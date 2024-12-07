@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -35,11 +36,11 @@ import com.appsv.missionexpensemanager.core.presentation.ui.theme.getColorsForTh
 import com.appsv.missionexpensemanager.core.util.NetworkConnectionState
 import com.appsv.missionexpensemanager.core.util.rememberConnectivityState
 import com.appsv.missionexpensemanager.expense.data.local.room.TransactionEntity
-import com.appsv.missionexpensemanager.expense.domain.models.ui_models.TransactionState
-import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.TransactionCreationEvents
+import com.appsv.missionexpensemanager.expense.presentation.ui_models.TransactionState
+import com.appsv.missionexpensemanager.expense.presentation.TransactionEvents
 import com.appsv.missionexpensemanager.expense.presentation.transaction_creation.components.CustomFilterChip
-import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavIcon
-import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.NavItem
+import com.appsv.missionexpensemanager.expense.presentation.ui_models.NavIcon
+import com.appsv.missionexpensemanager.expense.presentation.ui_models.NavItem
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.SearchBar
 import com.appsv.missionexpensemanager.expense.presentation.transaction_dashboard.components.TransactionCard
 
@@ -50,7 +51,7 @@ fun Dashboard(
     transactionState: TransactionState = TransactionState(),
     onTransactionCardClick: (TransactionEntity) -> Unit = {},
     onFabClick: () -> Unit = {},
-    events: (TransactionCreationEvents) -> Unit = {}
+    events: (TransactionEvents) -> Unit = {}
 ) {
     var showNoInternetDialog by rememberSaveable { mutableStateOf(false) }
     val connectionState by rememberConnectivityState()
@@ -184,7 +185,7 @@ fun Dashboard(
 fun TransactionDashboardContent(
     transactionState: TransactionState,
     onTransactionCardClick: (TransactionEntity) -> Unit,
-    events: (TransactionCreationEvents) -> Unit,
+    events: (TransactionEvents) -> Unit,
     innerPadding: PaddingValues,
     selectedChip: String,
     chipOptions: List<String>,
@@ -194,8 +195,8 @@ fun TransactionDashboardContent(
     val getColors = getColorsForTheme()
     LazyColumn(
         modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(innerPadding),
         verticalArrangement = Arrangement.spacedBy(6.dp),
 
     ) {
@@ -203,10 +204,10 @@ fun TransactionDashboardContent(
             SearchBar(
                 text = transactionState.searchingText,
                 onExecuteSearch = {
-                    events(TransactionCreationEvents.StartSearchingTransactions)
+                    events(TransactionEvents.StartSearchingTransactions)
                 },
                 onSearchingTransactions = {
-                    events(TransactionCreationEvents.SearchTransactions(it))
+                    events(TransactionEvents.SearchTransactions(it))
                 }
             )
         }
@@ -233,7 +234,7 @@ fun TransactionDashboardContent(
                         selected = selectedChip == label,
                         onClick = {
                             onChipSelected(label)
-                            events(TransactionCreationEvents.FilterTransactions(label))
+                            events(TransactionEvents.FilterTransactions(label))
                         }
                     )
                 }

@@ -17,17 +17,15 @@ import com.appsv.missionexpensemanager.expense.presentation.transaction_details.
 
 @Composable
 fun AppNavGraph(
-    modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
 
     NavHost(
-        modifier = modifier,
         navController = navController,
-        startDestination = MainScreen
+        startDestination = Dashboard
     ){
 
-        composable<MainScreen>{
+        composable<Dashboard>{
             val transactionViewModel  = hiltViewModel<TransactionViewModel>()
 
             val transactionState by transactionViewModel.transactionState.collectAsStateWithLifecycle()
@@ -67,8 +65,8 @@ fun AppNavGraph(
                 selectedTransaction = transaction,
                 events = transactionViewModel::onEvent,
                 goToTransactionDashBoard = {
-                    navController.navigate(MainScreen){
-                        popUpTo<MainScreen>{
+                    navController.navigate(Dashboard){
+                        popUpTo<Dashboard>{
                             inclusive = true
                         }
                     }
@@ -101,8 +99,8 @@ fun AppNavGraph(
                     ))
                 },
                 goToTransactionDashBoard = {
-                    navController.navigate(MainScreen){
-                        popUpTo<MainScreen>{
+                    navController.navigate(Dashboard){
+                        popUpTo<Dashboard>{
                             inclusive = true
                         }
                     }

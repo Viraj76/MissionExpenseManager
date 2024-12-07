@@ -25,6 +25,11 @@ class TransactionRepositoryImpl @Inject constructor(
 
     private val transactionRef = firebaseDatabase.getReference(TRANSACTION)
 
+    /**
+     * The data source for saved transactions is our RoomDB, which is used to cache transactions
+     * fetched from Firebase for offline access. Transactions are only saved to Firebase when the user is online.
+     * Internet connectivity is monitored to display appropriate dialogs to the user in case of offline scenarios.
+     */
     override suspend fun getTransactions(): Flow<List<TransactionEntity>?> = callbackFlow {
 
         val roomTransactions = transactionDao.fetchAllTransactions()
@@ -69,14 +74,21 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
+
+    /**
+     * Currently, transactions are being saved directly to a specific path since authentication is not implemented.
+     * However, with authentication, unique user IDs can be utilized to save transactions under their respective paths.
+     */
     override suspend fun saveOrUpdateTransaction(transaction: Transaction) {
         transactionRef.child(transaction.id).setValue(transaction)
     }
 
+    /**
+     * Deletes the transaction from both remote storage and cache memory to ensure data consistency.
+     */
     override suspend fun deleteTransaction(id: String) {
         transactionRef.child(id).removeValue()
         transactionDao.deleteTransaction(id)
-
     }
 }
 
