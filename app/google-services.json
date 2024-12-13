@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "672662958919",
+    "project_id": "missionexpensemanager",
+    "storage_bucket": "missionexpensemanager.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672662958919:android:6252397a5cf9e0a6b21262",
+        "android_client_info": {
+          "package_name": "com.appsv.missionexpensemanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS5qpHeVuwWU68p1_6UX7MIIRTiSJKk3Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
