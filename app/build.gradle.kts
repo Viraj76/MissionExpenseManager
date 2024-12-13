@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.appsv.missionexpensemanager"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.appsv.missionexpensemanager"
